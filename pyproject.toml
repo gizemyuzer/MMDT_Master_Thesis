@@ -1,0 +1,11 @@
+[project]
+name = "archive"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=2.2.6",
+    "pandas>=2.3.3",
+    "scikit-learn>=1.7.2",
+    "torch>=2.13.0",
+    "wrds>=3.1.6",
+]

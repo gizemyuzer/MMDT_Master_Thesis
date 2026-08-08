@@ -1,0 +1,13 @@
+{
+  "best_params": {
+    "n_heads": 4,
+    "head_dim": 8,
+    "n_layers": 3,
+    "ffn_mult": 4,
+    "dropout": 0.44415250753246777,
+    "lr": 6.834925639823167e-05,
+    "weight_decay": 0.012141082236449946,
+    "focal_gamma": 3.0
+  },
+  "best_value": 0.2613021499372153
+}

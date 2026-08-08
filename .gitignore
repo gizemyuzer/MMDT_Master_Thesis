@@ -1,0 +1,6 @@
+datasets/
+checkpoints/
+logs/
+__pycache__/
+__MACOSX/
+.idea/
