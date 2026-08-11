@@ -1,0 +1,58 @@
+group,feature,missing_pct
+Teknik (I),RSI,0.5378043384179995
+Teknik (I),MACD_Hist,1.2676816548424272
+Teknik (I),MACD_Hist_Slope,1.3060962504437128
+Teknik (I),BB_Pct,0.7298773164244278
+Teknik (I),BB_Width,0.7298773164244278
+Teknik (I),Returns,0.03841459560128567
+Teknik (I),Vol_20d,0.7682919120257135
+Teknik (I),Vol_5d,0.19207297800642836
+Teknik (I),Current_Drawdown_5d,0.15365838240514268
+Teknik (I),Current_Drawdown_20d,0.7298773164244278
+Teknik (I),Current_Return_5d,0.19207297800642836
+Teknik (I),ADX_14,1.0371940812347131
+Teknik (I),Price_vs_SMA50,1.882315184462998
+Teknik (I),Price_vs_SMA200,7.55853363222158
+Teknik (I),ROC_10,0.3841459560128567
+Teknik (I),Dist_to_Max252d,9.496088032637818
+Teknik (I),Rel_Volume,0.7298773164244278
+Teknik (I),Vol_Trend,0.7298773164244278
+Teknik (I),Price_vs_Max20d,0.7298773164244278
+Teknik (I),RSI_vs_Max20d,1.2676816548424272
+Teknik (I),RSI_Divergence,1.2676816548424272
+Teknik (I),Vol_Dist_Ratio,0.7298773164244278
+Teknik (I),Rel_Returns,0.03841459560128567
+Teknik (I),Rel_RSI,0.5378043384179995
+Teknik (I),Rel_Vol_20d,0.7682919120257135
+Teknik (I),Rel_MACD,1.2676816548424272
+Teknik (I),Rel_ROC_10,0.3841459560128567
+Teknik (I),Rel_ATR_14,0.5378043384179995
+Teknik (I),CCI_14,0.4993897428167138
+Teknik (I),MFI_14,0.5378043384179995
+Teknik (I),WILLR_14,0.4993897428167138
+Teknik (I),OBV_Z20,0.7298773164244278
+Firma fundamental (II),Debt_to_Equity,19.244059109851154
+Firma fundamental (II),Net_Profit_Margin,19.61711832181706
+Firma fundamental (II),Current_Ratio,21.68567135584072
+Firma fundamental (II),Altman_Z,19.244059109851154
+Firma fundamental (II),Retained_Earnings_TA,19.52725734375228
+Firma fundamental (II),Market_Value_to_Liab,19.490982295247775
+Makro (III),VIX_Close,0.0
+Makro (III),SPY_Trend_50,0.0
+Makro (III),SPY_Trend_200,0.0
+Makro (III),VIX_5d_Delta,0.19158671730261462
+Makro (III),VIX_10d_Delta,0.38317343460522924
+Makro (III),SPY_Trend_Accel,0.19158671730261462
+Makro (III),Yield_Spread_10Y2Y,0.0
+Makro (III),Is_Yield_Inverted,0.0
+Makro (III),Yield_Spread_Delta_20d,0.0
+Kesitsel (_XS),Debt_to_Equity_XS,19.244059109851154
+Kesitsel (_XS),Net_Profit_Margin_XS,19.61711832181706
+Kesitsel (_XS),Current_Ratio_XS,21.68567135584072
+Kesitsel (_XS),Altman_Z_XS,19.244059109851154
+Kesitsel (_XS),Retained_Earnings_TA_XS,19.52725734375228
+Kesitsel (_XS),Market_Value_to_Liab_XS,19.490982295247775
+Etkileşim,Debt_x_VIX_Delta,19.244059109851154
+Etkileşim,Leverage_x_VIX,19.244059109851154
+Etkileşim,Liquidity_Stress,21.68567135584072
+Etkileşim,Margin_x_Vol,19.619063364632314
