@@ -71,26 +71,72 @@ from models.losses import FocalLoss
 # ══════════════════════════════════════════════════════════════════
 # Ablation tanımları: ad → (tech_groups, fund_groups, modality, açıklama)
 # ══════════════════════════════════════════════════════════════════
+# ══════════════════════════════════════════════════════════════════
+# TAM FAKTÖRİYEL TASARIM — I / II / III
+# ══════════════════════════════════════════════════════════════════
+#   I   = teknik (32 fiyat göstergesi)
+#   II  = fundamental (6 firma muhasebe oranı)
+#   III = makro (9 piyasa geneli seri)
+#
+# 2³−1 = 7 hücrenin tamamı koşulur. Bu, "şu kombinasyonu denemediniz"
+# itirazını tamamen kapatır ve marjinal katkı analizini mümkün kılar:
+#     Δ(II | I)      = (I+II) − I          bilanço, fiyata ne katıyor?
+#     Δ(III | I)     = (I+III) − I         makro, fiyata ne katıyor?
+#     Δ(III | I+II)  = (I+II+III) − (I+II) makro, ikisinin üstüne ne katıyor?
+#
+# AKIŞ ATAMA KURALI (a priori, sonuçlara bakılmadan sabitlendi):
+#   Akış A (teknik encoder)  ← I
+#   Akış B (bağlam encoder)  ← II ve/veya III
+# Gerekçe: hızlı/fiyat kaynaklı sinyaller ayrı, yavaş/bağlamsal sinyaller
+# ayrı encoder'da. Mimari iki akışlı olduğu için üç modalite bu kuralla
+# yerleştirilir; kural tüm hücrelerde AYNI uygulanır.
+#
+# Tek modaliteli hücrelerde (I, II, III, II+III) kullanılmayan akış için
+# bir "dummy" grup verilir — model onu modality parametresiyle yok sayar,
+# sonucu etkilemez, sadece loader'ın iki akış beklemesini karşılar.
 ABLATIONS = {
-    'macro_only': (
-        ('tech',), ('macro',), 'fund_only',
-        'Sadece makro (kesitsel ayrım gücü SIFIR olan kontrol grubu)',
+    # ── Tekli modaliteler ──
+    'tech_only': (
+        ('tech',), ('fund',), 'tech_only',
+        '[I] Sadece teknik (fund akışı kurulur ama model yok sayar)',
     ),
     'fund_pure_only': (
         ('tech',), ('fund',), 'fund_only',
-        'Sadece 6 firma muhasebe oranı (ham seviye)',
+        '[II] Sadece 6 firma muhasebe oranı (ham seviye)',
     ),
-    'fund_xs_only': (
-        ('tech',), ('fund', 'fund_xs'), 'fund_only',
-        'Firma oranları + tarih-içi kesitsel yüzdelik dilimleri',
+    'macro_only': (
+        ('tech',), ('macro',), 'fund_only',
+        '[III] Sadece makro (kesitsel ayrım gücü SIFIR olan kontrol grubu)',
     ),
+    # ── İkili kombinasyonlar ──
     'multi_pure': (
         ('tech',), ('fund',), 'multimodal',
-        'Teknik + firma oranları, cross-attention (makrosuz temiz füzyon)',
+        '[I+II] Teknik + firma oranları, cross-attention (makrosuz füzyon)',
+    ),
+    'tech_macro': (
+        ('tech',), ('macro',), 'multimodal',
+        '[I+III] Teknik + makro, cross-attention',
+    ),
+    'fund_macro': (
+        ('tech',), ('fund', 'macro'), 'fund_only',
+        '[II+III] Firma oranları + makro (fiyat sinyali yok)',
+    ),
+    # ── Üçlü ──
+    'all_three': (
+        ('tech',), ('fund', 'macro'), 'multimodal',
+        '[I+II+III] Tam model — orijinal kurulumun makrolu hali',
+    ),
+    # ── Robustness varyantı (faktöriyelin parçası DEĞİL) ──
+    # Kesitsel normalizasyon, II'nin bir varyantıdır; dördüncü faktör olarak
+    # eklenirse tasarım 16 hücreye çıkar. Ayrı bir robustness satırı olarak
+    # raporlanmalı: II-ham vs II-kesitsel.
+    'fund_xs_only': (
+        ('tech',), ('fund', 'fund_xs'), 'fund_only',
+        '[II-kesitsel] Firma oranları + tarih-içi yüzdelik dilimleri',
     ),
     'multi_xs': (
         ('tech',), ('fund', 'fund_xs'), 'multimodal',
-        'Teknik + firma + kesitsel, cross-attention (ANA HİPOTEZ)',
+        '[I+II-kesitsel] Teknik + firma + kesitsel, cross-attention',
     ),
 }
 

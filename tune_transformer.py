@@ -45,6 +45,11 @@ from models.losses import FocalLoss
 
 STUDY_PATH = 'results/optuna_transformer.json'
 
+# Füzyon tipi — main() içinde --fusion-type ile ayarlanır.
+# Varsayılan 'cross_attention': run_modality_v2.py'deki multi_pure ile AYNI
+# olmalı, aksi halde tune edilen model karşılaştırılan modelden farklı olur.
+FUSION_TYPE = 'cross_attention'
+
 
 def get_device():
     if torch.backends.mps.is_available():
@@ -173,7 +178,7 @@ def build_objective(train_ds, val_loader, tech_dim, fund_dim, alpha,
             tech_dim=tech_dim, fund_dim=fund_dim, seq_len=20,
             d_model=d_model, n_heads=n_heads, n_layers=n_layers,
             ffn_dim=d_model * ffn_mult, dropout=dropout,
-            modality='multimodal', fusion_type='gated_cross_attention',
+            modality='multimodal', fusion_type=FUSION_TYPE,
         ).to(device)
 
         train_loader = make_search_loader(train_ds, args.subsample,
@@ -216,7 +221,7 @@ def final_training(params, train_loader, val_loader, test_loader,
             n_layers=params['n_layers'],
             ffn_dim=d_model * params['ffn_mult'],
             dropout=params['dropout'],
-            modality='multimodal', fusion_type='gated_cross_attention',
+            modality='multimodal', fusion_type=FUSION_TYPE,
         )
         criterion = FocalLoss(alpha=alpha, gamma=params['focal_gamma'])
 
@@ -303,7 +308,7 @@ def ensemble_eval(params, seeds, val_loader, test_loader,
             d_model=d_model, n_heads=params['n_heads'],
             n_layers=params['n_layers'],
             ffn_dim=d_model * params['ffn_mult'], dropout=params['dropout'],
-            modality='multimodal', fusion_type='gated_cross_attention')
+            modality='multimodal', fusion_type=FUSION_TYPE)
         model.load_state_dict(torch.load(ckpt, weights_only=True,
                                          map_location='cpu'))
         model.to(device)
@@ -350,10 +355,25 @@ def main():
                     default=[42, 43, 44, 45, 46])
     ap.add_argument('--skip-search', action='store_true',
                     help='Aramayı atla, kayıtlı en iyi config ile final eğitim')
+    # ── Özellik grubu seçimi ──
+    # ÖNEMLİ: varsayılan artık MAKROSUZ (tech + 6 firma oranı) — yani
+    # run_modality_v2.py'deki `multi_pure` ile BİREBİR aynı özellik kümesi.
+    # Eskiden argüman verilmediği için get_dual_stream_dataloaders'ın legacy
+    # varsayılanı devreye giriyordu (fund = firma + makro + etkileşim, 19 kolon)
+    # ve tune edilen model, karşılaştırılan modelden FARKLI bir setle
+    # eğitiliyordu — bu, tuning sonucunu kullanılamaz kılar.
+    ap.add_argument('--tech-groups', type=str, nargs='+', default=['tech'])
+    ap.add_argument('--fund-groups', type=str, nargs='+', default=['fund'],
+                    help="ör: --fund-groups fund fund_xs  |  legacy için: fund macro interact")
+    ap.add_argument('--fusion-type', type=str, default='cross_attention',
+                    help="multi_pure ile aynı olmalı (cross_attention)")
     args = ap.parse_args()
 
     import optuna
     optuna.logging.set_verbosity(optuna.logging.WARNING)
+
+    global FUSION_TYPE
+    FUSION_TYPE = args.fusion_type
 
     os.makedirs('results', exist_ok=True)
     device = get_device()
@@ -367,9 +387,15 @@ def main():
     print(f"  Hedef          : validation PR-AUC  (test'e DOKUNULMAZ)")
     print(f"  Cihaz          : {device}\n")
 
+    print(f"  Özellik grupları: tech={tuple(args.tech_groups)} | "
+          f"fund={tuple(args.fund_groups)}")
+    print(f"  Füzyon tipi     : {args.fusion_type}\n")
+
     df = prepare_dataset(force_refresh=False)
     train_loader, val_loader, test_loader, _, (tech_cols, fund_cols) = \
-        get_dual_stream_dataloaders(df, seq_len=20, batch_size=args.batch_size)
+        get_dual_stream_dataloaders(df, seq_len=20, batch_size=args.batch_size,
+                                    tech_groups=tuple(args.tech_groups),
+                                    fund_groups=tuple(args.fund_groups))
 
     train_ds = train_loader.dataset
     alpha = compute_alpha(train_ds.labels)
