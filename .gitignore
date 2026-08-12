@@ -4,3 +4,4 @@ logs/
 __pycache__/
 __MACOSX/
 .idea/
+data/
