@@ -284,7 +284,8 @@ def main():
                 n_layers=BASE_CONFIG['n_layers'],
                 dropout=BASE_CONFIG['dropout'],
                 modality=modality,
-                fusion_type=BASE_CONFIG['fusion_type'],
+                fusion_type=fusion_for(name),
+            )
             )
             criterion = FocalLoss(alpha=alpha, gamma=2.0)
 
