@@ -73,6 +73,7 @@ CELLS = {
     'I':        (('tech',), ('fund',),          'tech_only',  'Sadece teknik'),
     'I+II':     (('tech',), ('fund',),          'multimodal', 'Teknik + firma (füzyon)'),
     'I+II+III': (('tech',), ('fund', 'macro'),  'multimodal', 'Teknik + firma + makro'),
+    'I+II+IV': (('tech',), ('fund', 'text'), 'multimodal', 'Teknik + firma + metin'),
 }
 CONFIG = dict(seq_len=20, d_model=64, n_heads=4, n_layers=2, dropout=0.15,
               fusion_type='cross_attention')

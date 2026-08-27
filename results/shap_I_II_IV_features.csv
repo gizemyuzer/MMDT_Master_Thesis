@@ -1,0 +1,58 @@
+feature,mean_abs_shap,modality,share_pct
+Vol_20d,0.2761403,I — teknik,21.830427
+TXT_DaysSinceFiling,0.23664266,IV — metin (LM/dil),18.70792
+Dist_to_Max252d,0.16437574,I — teknik,12.994817
+Rel_Vol_20d,0.05345775,I — teknik,4.2261324
+Price_vs_SMA200,0.048309755,I — teknik,3.819155
+LM_Constraining,0.04434412,IV — metin (LM/dil),3.5056493
+Net_Profit_Margin,0.038789418,II — firma,3.0665193
+BB_Width,0.03673867,I — teknik,2.9043965
+EK_DaysSince,0.033272084,IV — metin (8-K olay),2.6303432
+TXT_LenChange,0.030959496,IV — metin (LM/dil),2.4475205
+Rel_ATR_14,0.026504943,I — teknik,2.0953631
+Current_Drawdown_5d,0.026288256,I — teknik,2.078233
+EK_Activity_60d,0.021168547,IV — metin (8-K olay),1.6734914
+LM_Negative,0.019911185,IV — metin (LM/dil),1.5740899
+Market_Value_to_Liab,0.01827461,II — firma,1.4447097
+Debt_to_Equity,0.016139418,II — firma,1.2759107
+TXT_SimPrev,0.015938472,IV — metin (LM/dil),1.2600249
+Rel_Volume,0.014219619,I — teknik,1.12414
+Vol_5d,0.013809864,I — teknik,1.0917466
+LM_Litigious,0.013734353,IV — metin (LM/dil),1.085777
+LM_WordCount,0.012769913,IV — metin (LM/dil),1.0095327
+Retained_Earnings_TA,0.012287749,II — firma,0.9714149
+Altman_Z,0.011782832,II — firma,0.9314984
+Vol_Trend,0.011025354,I — teknik,0.87161565
+Current_Ratio,0.009169035,II — firma,0.72486323
+Price_vs_SMA50,0.006402525,I — teknik,0.50615525
+RSI_Divergence,0.006308985,I — teknik,0.49876034
+MACD_Hist,0.005920449,I — teknik,0.46804443
+LM_Uncertainty,0.0051202965,IV — metin (LM/dil),0.40478793
+LM_Positive,0.004778401,IV — metin (LM/dil),0.3777592
+EK_MgmtChange,0.004516941,IV — metin (8-K olay),0.3570893
+MACD_Hist_Slope,0.003759102,I — teknik,0.2971779
+Rel_MACD,0.003167406,I — teknik,0.25040108
+ADX_14,0.0023838026,I — teknik,0.18845285
+Vol_Dist_Ratio,0.0022819887,I — teknik,0.1804039
+Price_vs_Max20d,0.00222786,I — teknik,0.17612474
+Current_Drawdown_20d,0.001692034,I — teknik,0.1337647
+RSI_vs_Max20d,0.0015233046,I — teknik,0.1204257
+ROC_10,0.0013949022,I — teknik,0.11027478
+Rel_Returns,0.0013644896,I — teknik,0.10787049
+BB_Pct,0.0011795424,I — teknik,0.09324939
+Current_Return_5d,0.0011635812,I — teknik,0.091987565
+EK_ListingWarn,0.0009042779,IV — metin (8-K olay),0.071488194
+Returns,0.00053310796,I — teknik,0.04214515
+WILLR_14,0.00041134583,I — teknik,0.032519177
+Rel_RSI,0.00038457412,I — teknik,0.030402724
+RSI,0.0003656164,I — teknik,0.028904011
+MFI_14,0.00030512395,I — teknik,0.024121745
+CCI_14,0.00021693125,I — teknik,0.017149622
+OBV_Z20,0.00020291122,I — teknik,0.01604126
+Rel_ROC_10,0.00017274365,I — teknik,0.013656346
+EK_Impairment,0.00014467441,IV — metin (8-K olay),0.011437317
+EK_DebtTrigger,4.8705606e-05,IV — metin (8-K olay),0.003850449
+EK_AuditorChange,3.2871926e-06,IV — metin (8-K olay),0.00025987087
+EK_Bankruptcy,0.0,IV — metin (8-K olay),0.0
+EK_Restatement,0.0,IV — metin (8-K olay),0.0
+TXT_HasCoverage,0.0,IV — metin (LM/dil),0.0

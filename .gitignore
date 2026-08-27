@@ -5,3 +5,4 @@ __pycache__/
 __MACOSX/
 .idea/
 data/
+thesis_venv/

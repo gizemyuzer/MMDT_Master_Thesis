@@ -15,43 +15,26 @@ Kritik ayrım: MAKRO kolonlar belirli bir günde tüm hisseler için AYNI değer
 alır → kesitsel ayrım güçleri sıfırdır. "Piyasa ne zaman düşecek"i öğrenirler,
 "hangi hisse düşecek"i değil. Val dönemi (2020-21 COVID) tek ortak şok olduğu
 için bu değişkenler orada parlıyor, test döneminde (2022-24, firmaya özgü
-düşüşler) çöküyor. fund_only'nin val 0.26 → test −0.018 çöküşünün açıklaması
-büyük ihtimalle bu.
-
-Bu script iki soruyu ayrı ayrı yanıtlar:
-  (1) TEŞHİS  — eski fund_only sonucunu sürükleyen makro muydu, bilanço mu?
-  (2) TEDAVİ  — firma değişkenlerini KESİTSEL normalize edersek (tarih-içi
-                yüzdelik dilim) fundamental akış gerçek ayrım gücü kazanır mı?
+düşüşler) çöküyor.
 
 ═══════════════════════════════════════════════════════════════════════
-ABLATION'LAR
+MODALİTE IV — METİN (SEC EDGAR)
 ═══════════════════════════════════════════════════════════════════════
-  macro_only        fund akışı = 9 makro   → TEŞHİS: eski fund_only'yi bu mu
-                                              sürüklüyordu? (beklenti: evet,
-                                              val yüksek + test çöküşü tekrarlar)
-  fund_pure_only    fund akışı = 6 firma   → TEŞHİS: bilanço tek başına ne yapar?
-  fund_xs_only      fund akışı = 6 firma + 6 kesitsel → TEDAVİ testi
-  multi_pure        tech + 6 firma         → makrosuz temiz füzyon
-  multi_xs          tech + firma + kesitsel → ANA HİPOTEZ: XGBoost'u geçer mi?
+Dördüncü modalite eklendi: 10-K/10-Q metninden Loughran-McDonald duygu
+oranları + ardışık dosyalar arası benzerlik (Cohen, Malloy & Nguyen 2020),
+ve 8-K item kodlarından türetilen sıkıntı olayı bayrakları.
 
-Etkileşim terimleri (Debt_x_VIX_Delta vb.) BİLİNÇLİ olarak hiçbirinde yok:
-onlar firma×makro çarpımı, yani füzyonun kendisinin keşfetmesi gereken şeyi
-elle vermek olur. Çıkarmak, füzyon hipotezinin temiz testini sağlar.
-
-KARŞILAŞTIRMA REFERANSLARI (mevcut sonuçlar, test MCC):
-  XGBoost            0.1100  (tek seed, 100-trial Optuna)
-  tech_only          0.1118 ± 0.0145  (5 seed)
-  concat/gated/FiLM/static  0.083–0.092  (5'er seed)
-  late-fusion stacked 0.0306 ± 0.0173  (5 seed)
+XGBoost tarafındaki ilk bulgu: metin, POZİTİF genelleme farkı olan tek
+modalite (val 0.020 → test 0.094). Makronun tam aynası — çünkü metin
+firmaya özgü, makro değil. Bu, tezin kesitsel argümanını doğruluyor.
 
 KULLANIM:
-    python run_modality_v2.py                      # 5 seed, tüm ablation'lar
-    python run_modality_v2.py --seeds 42 43 44     # hızlı ilk okuma (~9 saat)
-    python run_modality_v2.py --ablations multi_xs # tek ablation
-    python run_modality_v2.py --force              # sıfırdan başla
+    python run_modality_v2.py --ablations multi_text --seeds 42 43 44
+    python run_modality_v2.py --ablations multi_pure_gated   # attribution
+    python run_modality_v2.py --force                        # seçili hücreleri yenile
 
 Resume desteklidir: yarıda kesilirse tamamlanan (ablation, seed) çiftleri
-atlanır. --force ile sıfırlanır.
+atlanır.
 """
 import os
 import time
@@ -69,31 +52,24 @@ from models.losses import FocalLoss
 
 
 # ══════════════════════════════════════════════════════════════════
-# Ablation tanımları: ad → (tech_groups, fund_groups, modality, açıklama)
-# ══════════════════════════════════════════════════════════════════
-# ══════════════════════════════════════════════════════════════════
 # TAM FAKTÖRİYEL TASARIM — I / II / III
 # ══════════════════════════════════════════════════════════════════
 #   I   = teknik (32 fiyat göstergesi)
 #   II  = fundamental (6 firma muhasebe oranı)
 #   III = makro (9 piyasa geneli seri)
+#   IV  = metin (SEC EDGAR: 8-K olayları + LM duygu + benzerlik)
 #
-# 2³−1 = 7 hücrenin tamamı koşulur. Bu, "şu kombinasyonu denemediniz"
-# itirazını tamamen kapatır ve marjinal katkı analizini mümkün kılar:
-#     Δ(II | I)      = (I+II) − I          bilanço, fiyata ne katıyor?
-#     Δ(III | I)     = (I+III) − I         makro, fiyata ne katıyor?
-#     Δ(III | I+II)  = (I+II+III) − (I+II) makro, ikisinin üstüne ne katıyor?
+# 2³−1 = 7 hücrenin tamamı koşulur; marjinal katkı analizi:
+#     Δ(II | I)      = (I+II) − I
+#     Δ(III | I)     = (I+III) − I
+#     Δ(III | I+II)  = (I+II+III) − (I+II)
+#     Δ(IV | I+II)   = (I+II+IV) − (I+II)
 #
 # AKIŞ ATAMA KURALI (a priori, sonuçlara bakılmadan sabitlendi):
 #   Akış A (teknik encoder)  ← I
-#   Akış B (bağlam encoder)  ← II ve/veya III
+#   Akış B (bağlam encoder)  ← II, III ve/veya IV
 # Gerekçe: hızlı/fiyat kaynaklı sinyaller ayrı, yavaş/bağlamsal sinyaller
-# ayrı encoder'da. Mimari iki akışlı olduğu için üç modalite bu kuralla
-# yerleştirilir; kural tüm hücrelerde AYNI uygulanır.
-#
-# Tek modaliteli hücrelerde (I, II, III, II+III) kullanılmayan akış için
-# bir "dummy" grup verilir — model onu modality parametresiyle yok sayar,
-# sonucu etkilemez, sadece loader'ın iki akış beklemesini karşılar.
+# ayrı encoder'da. Kural tüm hücrelerde AYNI uygulanır.
 ABLATIONS = {
     # ── Tekli modaliteler ──
     'tech_only': (
@@ -127,9 +103,6 @@ ABLATIONS = {
         '[I+II+III] Tam model — orijinal kurulumun makrolu hali',
     ),
     # ── Robustness varyantı (faktöriyelin parçası DEĞİL) ──
-    # Kesitsel normalizasyon, II'nin bir varyantıdır; dördüncü faktör olarak
-    # eklenirse tasarım 16 hücreye çıkar. Ayrı bir robustness satırı olarak
-    # raporlanmalı: II-ham vs II-kesitsel.
     'fund_xs_only': (
         ('tech',), ('fund', 'fund_xs'), 'fund_only',
         '[II-kesitsel] Firma oranları + tarih-içi yüzdelik dilimleri',
@@ -137,6 +110,51 @@ ABLATIONS = {
     'multi_xs': (
         ('tech',), ('fund', 'fund_xs'), 'multimodal',
         '[I+II-kesitsel] Teknik + firma + kesitsel, cross-attention',
+    ),
+    # ══════════════════════════════════════════════════════════════
+    # MODALİTE IV — METİN
+    # ══════════════════════════════════════════════════════════════
+    # TAM FAKTÖRİYEL YAPILMIYOR: dört faktör 2⁴−1 = 15 hücre × 5 seed = 75
+    # koşu, ~60 saat GPU. Ayrıca metin, makro gibi bir hipotez testi değil,
+    # bir EKLEME sorusu: "fiyat ve bilançonun üstüne ne katıyor?" Cevap tek
+    # kontrastta: Δ(IV | I+II).
+    #
+    # 'text_only', II ve III için yaptığımızın aynısı: modalitenin tek başına
+    # bilgi taşıyıp taşımadığını gösteren kontrol hücresi. Onsuz "metin katkı
+    # yapmadı" sonucu, metnin hiç bilgi içermediğini mi yoksa fiyatla
+    # örtüştüğünü mü gösterdiği belirsiz kalırdı.
+    'text_only': (
+        ('tech',), ('text',), 'fund_only',
+        '[IV] Sadece metin (8-K olayları + LM duygu + benzerlik)',
+    ),
+    'multi_text': (
+        ('tech',), ('fund', 'text'), 'multimodal',
+        '[I+II+IV] Teknik + firma + metin — ANA METİN TESTİ',
+    ),
+    # Katman ayrımı: metin çuvallarsa hangi katman sorumlu?
+    # 8-K olayları günlük çözünürlükte ve NLP gerektirmiyor; LM çeyreklik.
+    # Tek grup olsaydı olayların katkısı LM gürültüsünde kaybolabilirdi.
+    'multi_text_event': (
+        ('tech',), ('fund', 'text_event'), 'multimodal',
+        '[I+II+IV-olay] Sadece 8-K olay bayrakları (LM yok)',
+    ),
+    'multi_text_lm': (
+        ('tech',), ('fund', 'text_lm'), 'multimodal',
+        '[I+II+IV-lm] Sadece Loughran-McDonald (8-K yok)',
+    ),
+    # ── Yorumlanabilirlik varyantları (faktöriyelin parçası DEĞİL) ──
+    # Aynı I+II özellik kümesi, farklı füzyon mekanizması. Amaç performans
+    # karşılaştırması değil ATTRIBUTION: kapı (gate) ve FiLM (gamma) değerleri
+    # ancak bu mimarilerde gözlemlenebilir. Daha önce ölçülen kapı=0.4892 ve
+    # gamma=0.7751 MAKRO İÇEREN eski özellik kümesinden geliyordu ve tezin
+    # geri kalanıyla tutarsızdı.
+    'multi_pure_gated': (
+        ('tech',), ('fund',), 'multimodal',
+        '[I+II gated] Teknik + firma, öğrenilebilir kapı (attribution için)',
+    ),
+    'multi_pure_film': (
+        ('tech',), ('fund',), 'multimodal',
+        '[I+II FiLM] Teknik + firma, feature-wise modülasyon (attribution için)',
     ),
 }
 
@@ -148,6 +166,20 @@ BASE_CONFIG = dict(
     dropout=0.15,
     fusion_type='cross_attention',
 )
+
+# ── Hücre-bazlı füzyon tipi ────────────────────────────────────────
+# Ayrı sözlük olarak tutuluyor çünkü ABLATIONS 4'lü tuple olarak dışarıdan
+# (ör. run_regime_analysis.py, run_portfolio_simulation.py) unpack ediliyor;
+# tuple'ı genişletmek onları kırardı.
+ABLATION_FUSION = {
+    'multi_pure_gated': 'gated_cross_attention',
+    'multi_pure_film': 'film',
+}
+
+
+def fusion_for(ablation_name: str) -> str:
+    """Hücrenin füzyon tipi — override yoksa taban konfigürasyon."""
+    return ABLATION_FUSION.get(ablation_name, BASE_CONFIG['fusion_type'])
 
 
 def set_seed(seed: int):
@@ -192,32 +224,50 @@ def main():
     ap.add_argument('--epochs', type=int, default=30)
     ap.add_argument('--outdir', type=str, default='results')
     ap.add_argument('--force', action='store_true',
-                    help='Tamamlanmış koşuları da yeniden çalıştır')
+                    help='SEÇİLEN ablation-seed çiftlerini yeniden çalıştır')
     args = ap.parse_args()
 
     os.makedirs(args.outdir, exist_ok=True)
     raw_path = os.path.join(args.outdir, 'modality_v2_raw.csv')
 
     print("═" * 78)
-    print("MODALITY V2 — fundamental / makro ayrımı sonrası ablation merdiveni")
+    print("MODALITY V2 — modalite ablation merdiveni")
     print("═" * 78)
     for name in args.ablations:
         tg, fg, mod, desc = ABLATIONS[name]
-        print(f"  {name:<16} fund={str(tuple(fg)):<22} modality={mod:<11} {desc}")
+        print(f"  {name:<17} fund={str(tuple(fg)):<22} modality={mod:<11} "
+              f"fusion={fusion_for(name):<22} {desc}")
     print(f"  Seed'ler    : {args.seeds}")
     print(f"  Toplam koşu : {len(args.ablations) * len(args.seeds)}")
     print()
 
-    # ── Resume ──
+    # ══════════════════════════════════════════════════════════════
+    # Resume
+    # ══════════════════════════════════════════════════════════════
+    # DİKKAT — bu blok bir VERİ KAYBI hatasını önlüyor:
+    # Eskiden --force verildiğinde `rows` boş listeyle başlıyordu ve koşu
+    # sonunda tüm CSV bu boş listeden yeniden yazılıyordu. Yani
+    #     python run_modality_v2.py --ablations multi_pure --force
+    # komutu, seçilmeyen ablation'ların TÜM satırlarını SESSİZCE SİLİYORDU.
+    # Artık geçmiş satırlar her zaman okunur; --force yalnızca SEÇİLEN
+    # ablation'ların satırlarını düşürür ve önce yedek alır.
     done = set()
     rows = []
-    if os.path.exists(raw_path) and not args.force:
+    if os.path.exists(raw_path):
         prev = pd.read_csv(raw_path)
+        if args.force:
+            backup = raw_path.replace('.csv', '_backup.csv')
+            prev.to_csv(backup, index=False)
+            dropped = prev[prev['ablation'].isin(args.ablations)]
+            prev = prev[~prev['ablation'].isin(args.ablations)]
+            print(f"  [--force] {len(dropped)} satır yeniden koşulacak; "
+                  f"{len(prev)} satır korunuyor.")
+            print(f"            Yedek → {backup}\n")
         rows = prev.to_dict('records')
         done = {(r['ablation'], int(r['seed'])) for r in rows}
-        if done:
+        if done and not args.force:
             print(f"  [Resume] {len(done)} koşu zaten tamamlanmış, atlanacak.")
-            print(f"           Sıfırdan başlatmak için --force kullan.\n")
+            print(f"           Seçili hücreleri yeniden koşmak için --force kullan.\n")
 
     print("[1/3] Dataset yükleniyor (cache)...")
     dataset_out = prepare_dataset(force_refresh=False)
@@ -227,10 +277,19 @@ def main():
                   if c not in dataset_out.columns]
     if xs_missing:
         print(f"\n  ⚠️ Kesitsel kolonlar eksik: {xs_missing}")
-        print("     feature_engineering.py güncel mi? _enrich_macro_features "
-              "bunları üretmeli. Devam ediliyor ama *_xs ablation'ları hatalı olur.")
     else:
         print("  ✓ Kesitsel (_XS) kolonlar mevcut")
+
+    # Metin kolonları — modalite IV hücreleri seçildiyse ŞART
+    text_cells = {'text_only', 'multi_text', 'multi_text_event', 'multi_text_lm'}
+    if text_cells & set(args.ablations):
+        n_text = len([c for c in dataset_out.columns
+                      if c.startswith(('EK_', 'LM_', 'TXT_'))])
+        if n_text == 0:
+            raise SystemExit(
+                "\n  ✗ Metin hücreleri seçildi ama panelde metin kolonu yok.\n"
+                "    Önce: python build_text_features.py --stage all\n")
+        print(f"  ✓ Metin (modalite IV) kolonları mevcut: {n_text}")
 
     device = get_device()
     print(f"  Device: {device}\n")
@@ -271,7 +330,8 @@ def main():
             print("\n" + "▄" * 78)
             print(f"KOŞU {n}/{total} — ablation={name} | seed={seed}")
             print(f"  {desc}")
-            print(f"  tech_dim={len(tech_cols)} | fund_dim={len(fund_cols)} | modality={modality}")
+            print(f"  tech_dim={len(tech_cols)} | fund_dim={len(fund_cols)} | "
+                  f"modality={modality} | fusion={fusion_for(name)}")
             print("▄" * 78)
 
             set_seed(seed)
@@ -285,7 +345,6 @@ def main():
                 dropout=BASE_CONFIG['dropout'],
                 modality=modality,
                 fusion_type=fusion_for(name),
-            )
             )
             criterion = FocalLoss(alpha=alpha, gamma=2.0)
 
@@ -311,6 +370,7 @@ def main():
             elapsed = round((time.time() - t0) / 60, 1)
             row = {
                 'ablation': name, 'seed': seed, 'modality': modality,
+                'fusion': fusion_for(name),
                 'fund_groups': '+'.join(fund_groups),
                 'tech_dim': len(tech_cols), 'fund_dim': len(fund_cols),
                 'threshold': res.get('threshold'), 'minutes': elapsed,
@@ -340,14 +400,14 @@ def main():
         if metric not in df.columns:
             continue
         print(f"\n── {metric.upper()} ──")
-        print(f"{'Ablation':<18}{'ortalama':>10}{'±std':>9}{'min':>9}{'max':>9}{'n':>4}")
-        print("-" * 60)
+        print(f"{'Ablation':<19}{'ortalama':>10}{'±std':>9}{'min':>9}{'max':>9}{'n':>4}")
+        print("-" * 61)
         g = df.groupby('ablation')[metric].agg(['mean', 'std', 'min', 'max', 'count'])
         for abl in args.ablations:
             if abl not in g.index:
                 continue
             r = g.loc[abl]
-            print(f"{abl:<18}{r['mean']:>10.4f}{(r['std'] if pd.notna(r['std']) else 0):>9.4f}"
+            print(f"{abl:<19}{r['mean']:>10.4f}{(r['std'] if pd.notna(r['std']) else 0):>9.4f}"
                   f"{r['min']:>9.4f}{r['max']:>9.4f}{int(r['count']):>4}")
             summaries.append({'ablation': abl, 'metric': metric, 'mean': r['mean'],
                               'std': r['std'], 'min': r['min'], 'max': r['max'],
@@ -357,14 +417,14 @@ def main():
     if {'test_mcc', 'val_mcc'} <= set(df.columns):
         df['gen_gap'] = df['test_mcc'] - df['val_mcc']
         print(f"\n── GENELLEME FARKI (test MCC − val MCC) ──")
-        print(f"{'Ablation':<18}{'ortalama':>10}{'±std':>9}{'negatif seed':>14}")
-        print("-" * 55)
+        print(f"{'Ablation':<19}{'ortalama':>10}{'±std':>9}{'negatif seed':>14}")
+        print("-" * 56)
         for abl in args.ablations:
             sub = df[df['ablation'] == abl]
             if sub.empty:
                 continue
             neg = int((sub['gen_gap'] < 0).sum())
-            print(f"{abl:<18}{sub['gen_gap'].mean():>10.4f}"
+            print(f"{abl:<19}{sub['gen_gap'].mean():>10.4f}"
                   f"{sub['gen_gap'].std() if len(sub) > 1 else 0:>9.4f}"
                   f"{neg:>10}/{len(sub)}")
             summaries.append({'ablation': abl, 'metric': 'gen_gap',
@@ -379,17 +439,19 @@ def main():
     print("\n" + "═" * 78)
     print("YORUM REHBERİ")
     print("═" * 78)
-    print("  Referanslar: XGBoost test MCC = 0.1100 | tech_only = 0.1118 ± 0.0145")
+    print("  Referanslar (5 seed, test MCC):")
+    print("    tech_only [I]      0.1110 ± 0.0142")
+    print("    multi_pure [I+II]  0.1273 ± 0.0122   ← metin karşılaştırma tabanı")
     print()
-    print("  macro_only ≈ eski fund_only (val yüksek, test çöküş) ise")
-    print("    → 'fundamental işe yaramadı' sonucu aslında MAKRO hakkındaymış; teşhis doğrulandı.")
-    print("  fund_xs_only >> fund_pure_only ise")
-    print("    → kesitsel normalizasyon firma bilançosuna gerçek ayrım gücü kazandırdı.")
-    print("  multi_xs > 0.1118 + 2×0.0145 (≈0.141) ise")
-    print("    → füzyon hem tech_only'yi hem XGBoost'u anlamlı biçimde geçti (ANA SONUÇ).")
-    print("  multi_xs ≈ multi_pure ≈ 0.09 ise")
-    print("    → kesitsel normalizasyon da kurtarmadı; negatif bulgu artık çok daha güçlü,")
-    print("       çünkü 'fundamental'ı adil biçimde temsil ettiğinizi kanıtlamış olursunuz.")
+    print("  multi_text > 0.1273 + 0.005 ise")
+    print("    → metin, fiyat ve bilançonun üstüne gerçek katkı veriyor.")
+    print("      (0.005 = XGBoost tarafında ölçülen arama gürültüsü tabanı)")
+    print("  text_only >> fund_pure_only (0.0068) ise")
+    print("    → metin, muhasebe oranlarından daha fazla firmaya özgü bilgi taşıyor.")
+    print("  multi_text'in GENELLEME FARKI pozitifse")
+    print("    → XGBoost'taki bulgu tekrarlandı: metin, makronun aynası.")
+    print("      Makro val'da parlar test'te çöker; metin val'da zayıf test'te güçlü.")
+    print("      İkisinin de açıklaması aynı: kesitsel varyans.")
 
     print(f"\nÖzet  → {summ_path}")
     print(f"Ham   → {raw_path}")

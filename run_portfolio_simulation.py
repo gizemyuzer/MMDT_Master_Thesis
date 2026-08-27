@@ -279,7 +279,7 @@ def main():
                 from sklearn.preprocessing import RobustScaler
                 from datasets.feature_engineering import resolve_groups
                 pdf = pd.read_csv(pp)
-                row = pdf[pdf['cell'] == 'I+II']
+                row = pdf[pdf['cell'] == 'I+II+IV']
                 if not row.empty:
                     cols = resolve_groups(dataset_out, ('tech', 'fund'))
                     tr = dataset_out[dataset_out.index <= '2019-12-31']
