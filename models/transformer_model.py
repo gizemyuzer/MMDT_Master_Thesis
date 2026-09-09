@@ -193,6 +193,17 @@ class DualEncoderTransformer(nn.Module):
         self.modality = modality
         self.fusion_type = fusion_type
 
+        # ── Attribution yakalama (run_attribution.py için) ──────────
+        # Varsayılan KAPALI: eğitim sırasında gereksiz bellek tutmasın.
+        # Açıkken forward, kapı/attention/FiLM tensörlerinin tamamını saklar.
+        self.capture_attribution = False
+        self.last_gate_t_full = None       # (B, T+1, D)
+        self.last_gate_f_full = None       # (B, T+1, D)
+        self.last_film_gamma_full = None   # (B, D)
+        self.last_film_beta_full = None    # (B, D)
+        self.last_attn_t2f = None          # (B, T+1, T+1)
+        self.last_attn_f2t = None          # (B, T+1, T+1)
+
         # ── Encoder'ları sadece gerekli olanları oluştur ────────────
         if modality in ('tech_only', 'multimodal'):
             self.tech_encoder = _StreamEncoder(
@@ -289,35 +300,45 @@ class DualEncoderTransformer(nn.Module):
         h_f = self.fund_encoder(x_fund)  # (B, T+1, D)
 
         if self.fusion_type == 'gated_cross_attention':
-            # Cross-attention çıktıları
-            attn_t, _ = self.cross_t2f(query=h_t, key=h_f, value=h_f)
-            attn_f, _ = self.cross_f2t(query=h_f, key=h_t, value=h_t)
+            # Cross-attention çıktıları — ağırlıkları artık atmıyoruz
+            attn_t, w_t2f = self.cross_t2f(query=h_t, key=h_f, value=h_f)
+            attn_f, w_f2t = self.cross_f2t(query=h_f, key=h_t, value=h_t)
 
             # Öğrenilebilir kapı: karşı modalitenin katkısını modüle eder
-            # g ∈ (0,1);  g→0: karşı modaliteyi yok say, g→1: tam karıştır
             g_t = torch.sigmoid(self.gate_t(torch.cat([h_t, attn_t], dim=-1)))
             g_f = torch.sigmoid(self.gate_f(torch.cat([h_f, attn_f], dim=-1)))
 
             h_t_fused = self.norm_t(h_t + g_t * attn_t)
             h_f_fused = self.norm_f(h_f + g_f * attn_f)
 
-            # Kapı istatistiğini sakla — analiz/görselleştirme için
+            # Skaler özet — eğitim loglaması için (eskisi gibi)
             self.last_gate_t = g_t.detach().mean().item()
             self.last_gate_f = g_f.detach().mean().item()
 
+            # Örnek bazlı tam tensörler — sadece analiz modunda
+            if self.capture_attribution:
+                self.last_gate_t_full = g_t.detach()
+                self.last_gate_f_full = g_f.detach()
+                self.last_attn_t2f = w_t2f.detach() if w_t2f is not None else None
+                self.last_attn_f2t = w_f2t.detach() if w_f2t is not None else None
+
             cls_t = h_t_fused[:, 0, :]
             cls_f = h_f_fused[:, 0, :]
+
         elif self.fusion_type == 'cross_attention':
-            # Tech sequence, fund sequence'i sorgular (rezidüel bağlantı)
-            attn_t, _ = self.cross_t2f(query=h_t, key=h_f, value=h_f)
+            attn_t, w_t2f = self.cross_t2f(query=h_t, key=h_f, value=h_f)
             h_t_fused = self.norm_t(h_t + attn_t)
 
-            # Fund sequence, tech sequence'i sorgular (rezidüel bağlantı)
-            attn_f, _ = self.cross_f2t(query=h_f, key=h_t, value=h_t)
+            attn_f, w_f2t = self.cross_f2t(query=h_f, key=h_t, value=h_t)
             h_f_fused = self.norm_f(h_f + attn_f)
+
+            if self.capture_attribution:
+                self.last_attn_t2f = w_t2f.detach() if w_t2f is not None else None
+                self.last_attn_f2t = w_f2t.detach() if w_f2t is not None else None
 
             cls_t = h_t_fused[:, 0, :]
             cls_f = h_f_fused[:, 0, :]
+
         elif self.fusion_type == 'film':
             cls_t = h_t[:, 0, :]
             cls_f = h_f[:, 0, :]
@@ -329,6 +350,10 @@ class DualEncoderTransformer(nn.Module):
             # Kapı/gate analiziyle paralel — analiz/görselleştirme için sakla
             self.last_film_gamma = gamma.detach().mean().item()
             self.last_film_beta = beta.detach().mean().item()
+
+            if self.capture_attribution:
+                self.last_film_gamma_full = gamma.detach()
+                self.last_film_beta_full = beta.detach()
 
             fused = cls_t_mod  # tek-akış çıktı, fusion_mlp'ye gerek yok
             if return_embedding:
