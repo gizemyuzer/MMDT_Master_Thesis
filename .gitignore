@@ -1,8 +1,8 @@
-datasets/
 checkpoints/
-logs/
 __pycache__/
 __MACOSX/
 .idea/
 data/
 thesis_venv/
+logs/
+datasets/
