@@ -1,0 +1,99 @@
+{
+  "status": "PASS",
+  "purpose": "integration_smoke_only_not_thesis_results",
+  "seed": 42,
+  "device": "cuda",
+  "tickers": [
+    "AAP",
+    "ACI",
+    "ACV",
+    "AEO",
+    "AGCO",
+    "AKAM",
+    "ALB",
+    "ALGN"
+  ],
+  "train_sequences": 17801,
+  "validation_sequences": 3606,
+  "train_batches": 5,
+  "validation_batches": 5,
+  "test_evaluated": false,
+  "config": {
+    "tech_dim": 32,
+    "fund_dim": 6,
+    "seq_len": 20,
+    "d_model": 64,
+    "n_heads": 4,
+    "n_layers": 2,
+    "ffn_dim": 256,
+    "dropout": 0.15,
+    "modality": "multimodal",
+    "fusion_type": "cross_attention"
+  },
+  "technical_columns": [
+    "RSI",
+    "MACD_Hist",
+    "MACD_Hist_Slope",
+    "BB_Pct",
+    "BB_Width",
+    "Returns",
+    "Vol_20d",
+    "Vol_5d",
+    "Current_Drawdown_5d",
+    "Current_Drawdown_20d",
+    "Current_Return_5d",
+    "ADX_14",
+    "Price_vs_SMA50",
+    "Price_vs_SMA200",
+    "ROC_10",
+    "Dist_to_Max252d",
+    "Rel_Volume",
+    "Vol_Trend",
+    "Price_vs_Max20d",
+    "RSI_vs_Max20d",
+    "RSI_Divergence",
+    "Vol_Dist_Ratio",
+    "Rel_Returns",
+    "Rel_RSI",
+    "Rel_Vol_20d",
+    "Rel_MACD",
+    "Rel_ROC_10",
+    "Rel_ATR_14",
+    "CCI_14",
+    "MFI_14",
+    "WILLR_14",
+    "OBV_Z20"
+  ],
+  "fundamental_columns": [
+    "Debt_to_Equity",
+    "Net_Profit_Margin",
+    "Current_Ratio",
+    "Altman_Z",
+    "Retained_Earnings_TA",
+    "Market_Value_to_Liab"
+  ],
+  "focal_alpha": 1.0,
+  "focal_gamma": 2.0,
+  "losses": {
+    "train": [
+      0.18104228377342224,
+      0.1775309145450592,
+      0.16519135236740112,
+      0.17840367555618286,
+      0.188487246632576
+    ],
+    "validation": [
+      0.17601391673088074,
+      0.16749992966651917,
+      0.1766921877861023,
+      0.16620874404907227,
+      0.17146176099777222
+    ]
+  },
+  "torch_version": "2.5.1+cu121",
+  "source_sha256": {
+    "datasets/feature_engineering.py": "f12769ee6724af590e3f5ddfbfc0873ee40404ec920940d8a07a28d4d57924a7",
+    "models/transformer_model.py": "0612e064fd4c113c58e9380fd221cb8ead33c3aad5fabce8822fa414d9d7e6b9",
+    "models/losses.py": "c30ce095c44b7cf12587c6ebf0cfbc3db6382b9bbdfa23069742288cbfa0e88a"
+  }
+}

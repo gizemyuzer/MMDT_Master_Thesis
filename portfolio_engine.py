@@ -26,6 +26,9 @@ import argparse
 import numpy as np
 import pandas as pd
 
+__build__ = "2026-09-12b"   # ortak başlangıç + işlem maskesi + NAV zirvesi + kaldıraçsız maliyet
+
+
 TRADING_DAYS = 252
 
 
@@ -38,7 +41,9 @@ def simulate_positions(scores_wide: pd.DataFrame,
                        cash_weight_fn=None,
                        cash_yield: float = 0.0,
                        higher_is_riskier: bool = True,
-                       initial_capital: float = 1.0):
+                       initial_capital: float = 1.0,
+                       tradable: pd.DataFrame | None = None,
+                       start_date=None):
     """
     Hisse-adedi (pozisyon değeri) bazlı simülasyon.
 
@@ -63,6 +68,9 @@ def simulate_positions(scores_wide: pd.DataFrame,
     """
     cols = ret_wide.columns
     dates = ret_wide.index
+    if start_date is not None:
+        dates = dates[dates >= pd.Timestamp(start_date)]
+        ret_wide = ret_wide.loc[dates]
     daily_rf = ((1.0 + cash_yield / 100.0) ** (1.0 / TRADING_DAYS) - 1.0
                 if cash_yield else 0.0)
 
@@ -71,6 +79,10 @@ def simulate_positions(scores_wide: pd.DataFrame,
     equity = np.empty(len(dates))
     weights = pd.DataFrame(0.0, index=dates, columns=cols)
     turnover_log, cash_log = {}, {}
+    # Skoru yetersiz olduğu için atlanan rebalance günleri. Sessiz kalmamalı:
+    # atlanan gün portföyün nakitte beklemesi demektir ve pasif referansla
+    # başlangıç koşulunu bozar (bkz. run_portfolio_v2 --report-coverage).
+    skipped = []
 
     for i, d in enumerate(dates):
         # ── 1) piyasa hareketi: pozisyonlar sürüklenir ──
@@ -83,8 +95,16 @@ def simulate_positions(scores_wide: pd.DataFrame,
             s = scores_wide.loc[d] if d in scores_wide.index else pd.Series(dtype=float)
             avail = s.dropna()
             avail = avail[avail.index.isin(cols)]
+            # İşlem görebilirlik maskesi: o gün fiyatı olmayan hisse hiçbir
+            # stratejide alınabilir sayılmaz. Pasif referansın skorları sabit
+            # sıfır olduğu için bu maske olmadan fiyatsız hisseleri de alıyordu.
+            if tradable is not None and d in tradable.index:
+                ok = tradable.loc[d].reindex(avail.index).fillna(False)
+                avail = avail[ok.to_numpy(dtype=bool)]
 
-            if len(avail) >= 10:
+            if len(avail) < 10:
+                skipped.append(d)
+            else:
                 N = len(avail)
                 k = int(np.ceil(N * exclude_pct / 100.0))
                 ranked = avail.sort_values(ascending=higher_is_riskier,
@@ -102,15 +122,29 @@ def simulate_positions(scores_wide: pd.DataFrame,
                 cw = min(max(cw, 0.0), 1.0)
 
                 total = float(pos.sum() + cash)
+                c = cost_bps / 10_000.0
+
+                # Maliyet, yatırılacak tutardan ÖNCE ayrılır; aksi hâlde
+                # sermayenin tamamı hisseye girip ücret nakdi negatife iter
+                # ve portföy kaldıraçlı hâle gelir (kaldıraçsız tanıma aykırı).
+                # traded ↔ fee karşılıklı bağımlı; sabit nokta 3-4 turda oturur.
+                fee = 0.0
                 target = pd.Series(0.0, index=cols)
-                if len(keep) > 0:
-                    target[keep] = total * (1.0 - cw) / len(keep)
+                for _ in range(6):
+                    investable = max(total - fee, 0.0)
+                    target = pd.Series(0.0, index=cols)
+                    if len(keep) > 0:
+                        target[keep] = investable * (1.0 - cw) / len(keep)
+                    traded = float((target - pos).abs().sum())
+                    new_fee = traded * c
+                    if abs(new_fee - fee) < 1e-14:
+                        fee = new_fee
+                        break
+                    fee = new_fee
 
                 traded = float((target - pos).abs().sum())      # tek yön toplam
-                fee = traded * (cost_bps / 10_000.0)
-
                 pos = target
-                cash = total * cw - fee                         # maliyet nakitten
+                cash = max(total - fee, 0.0) * cw
                 turnover_log[d] = traded / total if total > 0 else 0.0
                 cash_log[d] = cw
 
@@ -124,6 +158,8 @@ def simulate_positions(scores_wide: pd.DataFrame,
     avg_turnover = float(np.mean(list(turnover_log.values()))) if turnover_log else 0.0
     avg_invested = float(weights.sum(axis=1).mean())
     avg_cash = float(np.mean(list(cash_log.values()))) if cash_log else 0.0
+    simulate_positions.last_skipped = skipped
+    simulate_positions.last_first_trade = (min(turnover_log) if turnover_log else None)
     return net, avg_turnover, avg_invested, avg_cash, weights
 
 
@@ -138,7 +174,9 @@ def performance(ret: pd.Series, label: str = '') -> dict:
         out['strategy'] = label
         out['n_days'] = len(r)
         return out
-    cum = (1 + r).cumprod()
+    # Başlangıç NAV'ı (1.0) ilk zirve olarak sayılmalı; aksi hâlde serinin
+    # ilk gözlemi negatifse o düşüş hiç drawdown olarak görünmez.
+    cum = pd.concat([pd.Series([1.0]), (1 + r).cumprod()], ignore_index=True)
     years = len(r) / TRADING_DAYS
     total = float(cum.iloc[-1] - 1)
     cagr = float(cum.iloc[-1] ** (1 / years) - 1) if years > 0 else np.nan
@@ -197,10 +235,14 @@ def self_test() -> bool:
     ret3 = pd.DataFrame(0.0, index=dates, columns=cols)
     net3, tov3, *_ = simulate_positions(sc, ret3, {dates[0]},
                                         exclude_pct=0.0, cost_bps=100.0)
-    # tek kurulum: sermayenin tamamı işlem görür → 100 bps = %1
-    check("tek kurulum maliyeti", float((1 + net3).prod() - 1), -0.01)
-    print(f"  ✓ devir hızı: {tov3:.4f} (beklenen 1.0000)")
-    ok &= abs(tov3 - 1.0) < 1e-9
+    # Maliyet yatırımdan ÖNCE ayrıldığı için işlem gören tutar sermayenin
+    # tamamı değil, 1/(1+c) kadarıdır: c=0.01 → işlem 0.990099, ücret
+    # 0.009901, net getiri −0.9901%. Eski sürüm burada −1.0000% veriyordu
+    # ama bunu portföyü %101.01 kaldıraçlı bırakarak yapıyordu.
+    c = 0.01
+    want = -(c / (1 + c))
+    check("tek kurulum maliyeti (kaldıraçsız)", float((1 + net3).prod() - 1), want, 1e-12)
+    check("devir hızı", tov3, 1.0 / (1 + c), 1e-12)
 
     print()
     print("═" * 62)

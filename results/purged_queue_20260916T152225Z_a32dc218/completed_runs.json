@@ -1,0 +1,332 @@
+[
+  {
+    "ablation": "tech_only",
+    "seed": 42,
+    "reused": false,
+    "report": "\\\\nas.ads.mwn.de\\go39lop\\Desktop\\Archive\\results\\purged_tech_only_seed42_20260916T152334Z_a510e05e\\experiment_report.json",
+    "dataset_hash_verified": true,
+    "test_mcc": 0.09940812149557414,
+    "test_pr_auc": 0.17727875354854725,
+    "test_roc_auc": 0.6141287146720511
+  },
+  {
+    "ablation": "multi_pure",
+    "seed": 42,
+    "reused": true,
+    "report": "\\\\nas.ads.mwn.de\\go39lop\\Desktop\\Archive\\results\\purged_I_II_20260916T125022Z_71e5782e\\experiment_report.json",
+    "dataset_hash_verified": false,
+    "test_mcc": 0.11947711186155296,
+    "test_pr_auc": 0.1964072893662723,
+    "test_roc_auc": 0.6359358887989882
+  },
+  {
+    "ablation": "multi_text",
+    "seed": 42,
+    "reused": false,
+    "report": "\\\\nas.ads.mwn.de\\go39lop\\Desktop\\Archive\\results\\purged_multi_text_seed42_20260916T155932Z_908edbad\\experiment_report.json",
+    "dataset_hash_verified": true,
+    "test_mcc": 0.13756198004843828,
+    "test_pr_auc": 0.19856415694760668,
+    "test_roc_auc": 0.6447086605477792
+  },
+  {
+    "ablation": "tech_only",
+    "seed": 43,
+    "reused": false,
+    "report": "\\\\nas.ads.mwn.de\\go39lop\\Desktop\\Archive\\results\\purged_tech_only_seed43_20260916T164909Z_83f504e7\\experiment_report.json",
+    "dataset_hash_verified": true,
+    "test_mcc": 0.11523144532518034,
+    "test_pr_auc": 0.1902582891754763,
+    "test_roc_auc": 0.6316783422052672
+  },
+  {
+    "ablation": "multi_pure",
+    "seed": 43,
+    "reused": true,
+    "report": "\\\\nas.ads.mwn.de\\go39lop\\Desktop\\Archive\\results\\purged_I_II_seed43_20260916T143133Z_083865f8\\experiment_report.json",
+    "dataset_hash_verified": false,
+    "test_mcc": 0.12552776560584314,
+    "test_pr_auc": 0.1938561004310708,
+    "test_roc_auc": 0.6345768971083732
+  },
+  {
+    "ablation": "multi_text",
+    "seed": 43,
+    "reused": false,
+    "report": "\\\\nas.ads.mwn.de\\go39lop\\Desktop\\Archive\\results\\purged_multi_text_seed43_20260916T171556Z_e37ac17d\\experiment_report.json",
+    "dataset_hash_verified": true,
+    "test_mcc": 0.10589463087953434,
+    "test_pr_auc": 0.18006346064713188,
+    "test_roc_auc": 0.615367391262067
+  },
+  {
+    "ablation": "tech_only",
+    "seed": 44,
+    "reused": false,
+    "report": "\\\\nas.ads.mwn.de\\go39lop\\Desktop\\Archive\\results\\purged_tech_only_seed44_20260916T183225Z_6d627507\\experiment_report.json",
+    "dataset_hash_verified": true,
+    "test_mcc": 0.14096980225682965,
+    "test_pr_auc": 0.20001730141095028,
+    "test_roc_auc": 0.6504746024096097
+  },
+  {
+    "ablation": "multi_pure",
+    "seed": 44,
+    "reused": false,
+    "report": "\\\\nas.ads.mwn.de\\go39lop\\Desktop\\Archive\\results\\purged_multi_pure_seed44_20260916T185606Z_48428ad9\\experiment_report.json",
+    "dataset_hash_verified": true,
+    "test_mcc": 0.13794128784775037,
+    "test_pr_auc": 0.2054915824111594,
+    "test_roc_auc": 0.6487539682179597
+  },
+  {
+    "ablation": "multi_text",
+    "seed": 44,
+    "reused": false,
+    "report": "\\\\nas.ads.mwn.de\\go39lop\\Desktop\\Archive\\results\\purged_multi_text_seed44_20260916T194001Z_7dbe1b6a\\experiment_report.json",
+    "dataset_hash_verified": true,
+    "test_mcc": 0.13710197766938462,
+    "test_pr_auc": 0.20721528756627064,
+    "test_roc_auc": 0.6535802996154825
+  },
+  {
+    "ablation": "tech_only",
+    "seed": 45,
+    "reused": false,
+    "report": "\\\\nas.ads.mwn.de\\go39lop\\Desktop\\Archive\\results\\purged_tech_only_seed45_20260916T202202Z_ae8ed5b8\\experiment_report.json",
+    "dataset_hash_verified": true,
+    "test_mcc": 0.13088749474221673,
+    "test_pr_auc": 0.19348052531973048,
+    "test_roc_auc": 0.6384939751861936
+  },
+  {
+    "ablation": "multi_pure",
+    "seed": 45,
+    "reused": false,
+    "report": "\\\\nas.ads.mwn.de\\go39lop\\Desktop\\Archive\\results\\purged_multi_pure_seed45_20260916T205240Z_58ed76a6\\experiment_report.json",
+    "dataset_hash_verified": true,
+    "test_mcc": 0.13010707991765444,
+    "test_pr_auc": 0.19611962360567226,
+    "test_roc_auc": 0.637102513766042
+  },
+  {
+    "ablation": "multi_text",
+    "seed": 45,
+    "reused": false,
+    "report": "\\\\nas.ads.mwn.de\\go39lop\\Desktop\\Archive\\results\\purged_multi_text_seed45_20260916T214520Z_14c055de\\experiment_report.json",
+    "dataset_hash_verified": true,
+    "test_mcc": 0.15683708986737602,
+    "test_pr_auc": 0.21189134219136277,
+    "test_roc_auc": 0.6642525622872966
+  },
+  {
+    "ablation": "tech_only",
+    "seed": 46,
+    "reused": false,
+    "report": "\\\\nas.ads.mwn.de\\go39lop\\Desktop\\Archive\\results\\purged_tech_only_seed46_20260916T222737Z_ae17aea2\\experiment_report.json",
+    "dataset_hash_verified": true,
+    "test_mcc": 0.13110419039619073,
+    "test_pr_auc": 0.19888350737315727,
+    "test_roc_auc": 0.6458295672668903
+  },
+  {
+    "ablation": "multi_pure",
+    "seed": 46,
+    "reused": false,
+    "report": "\\\\nas.ads.mwn.de\\go39lop\\Desktop\\Archive\\results\\purged_multi_pure_seed46_20260916T225115Z_5afe7530\\experiment_report.json",
+    "dataset_hash_verified": true,
+    "test_mcc": 0.13532094270478448,
+    "test_pr_auc": 0.20364248936634266,
+    "test_roc_auc": 0.6485984280934048
+  },
+  {
+    "ablation": "multi_text",
+    "seed": 46,
+    "reused": false,
+    "report": "\\\\nas.ads.mwn.de\\go39lop\\Desktop\\Archive\\results\\purged_multi_text_seed46_20260916T233519Z_6fa3adac\\experiment_report.json",
+    "dataset_hash_verified": true,
+    "test_mcc": 0.14923981342250123,
+    "test_pr_auc": 0.20839527983575945,
+    "test_roc_auc": 0.6533527931646412
+  },
+  {
+    "ablation": "tech_only",
+    "seed": 47,
+    "reused": false,
+    "report": "\\\\nas.ads.mwn.de\\go39lop\\Desktop\\Archive\\results\\purged_tech_only_seed47_20260917T002340Z_c93f0f5e\\experiment_report.json",
+    "dataset_hash_verified": true,
+    "test_mcc": 0.11286435079141276,
+    "test_pr_auc": 0.19350123379330825,
+    "test_roc_auc": 0.6367534042925632
+  },
+  {
+    "ablation": "multi_pure",
+    "seed": 47,
+    "reused": false,
+    "report": "\\\\nas.ads.mwn.de\\go39lop\\Desktop\\Archive\\results\\purged_multi_pure_seed47_20260917T005118Z_064a55c1\\experiment_report.json",
+    "dataset_hash_verified": true,
+    "test_mcc": 0.13321720061719736,
+    "test_pr_auc": 0.20124719814008116,
+    "test_roc_auc": 0.6448398564619996
+  },
+  {
+    "ablation": "multi_text",
+    "seed": 47,
+    "reused": false,
+    "report": "\\\\nas.ads.mwn.de\\go39lop\\Desktop\\Archive\\results\\purged_multi_text_seed47_20260917T013512Z_ef74ebf6\\experiment_report.json",
+    "dataset_hash_verified": true,
+    "test_mcc": 0.1534367660845595,
+    "test_pr_auc": 0.20952733909509563,
+    "test_roc_auc": 0.6611390482091087
+  },
+  {
+    "ablation": "tech_only",
+    "seed": 48,
+    "reused": false,
+    "report": "\\\\nas.ads.mwn.de\\go39lop\\Desktop\\Archive\\results\\purged_tech_only_seed48_20260917T021632Z_75334997\\experiment_report.json",
+    "dataset_hash_verified": true,
+    "test_mcc": 0.123712879051219,
+    "test_pr_auc": 0.19057666931866374,
+    "test_roc_auc": 0.6334469308425806
+  },
+  {
+    "ablation": "multi_pure",
+    "seed": 48,
+    "reused": false,
+    "report": "\\\\nas.ads.mwn.de\\go39lop\\Desktop\\Archive\\results\\purged_multi_pure_seed48_20260917T024844Z_abb80ad3\\experiment_report.json",
+    "dataset_hash_verified": true,
+    "test_mcc": 0.10355064892474532,
+    "test_pr_auc": 0.17784925678100158,
+    "test_roc_auc": 0.6154436164532912
+  },
+  {
+    "ablation": "multi_text",
+    "seed": 48,
+    "reused": false,
+    "report": "\\\\nas.ads.mwn.de\\go39lop\\Desktop\\Archive\\results\\purged_multi_text_seed48_20260917T041241Z_30604337\\experiment_report.json",
+    "dataset_hash_verified": true,
+    "test_mcc": 0.1419567108097266,
+    "test_pr_auc": 0.2038249959644841,
+    "test_roc_auc": 0.6509847088769047
+  },
+  {
+    "ablation": "tech_only",
+    "seed": 49,
+    "reused": false,
+    "report": "\\\\nas.ads.mwn.de\\go39lop\\Desktop\\Archive\\results\\purged_tech_only_seed49_20260917T045727Z_1c3b8e91\\experiment_report.json",
+    "dataset_hash_verified": true,
+    "test_mcc": 0.09354309016761993,
+    "test_pr_auc": 0.1769240409275096,
+    "test_roc_auc": 0.6136583524121716
+  },
+  {
+    "ablation": "multi_pure",
+    "seed": 49,
+    "reused": false,
+    "report": "\\\\nas.ads.mwn.de\\go39lop\\Desktop\\Archive\\results\\purged_multi_pure_seed49_20260917T054815Z_71e426cd\\experiment_report.json",
+    "dataset_hash_verified": true,
+    "test_mcc": 0.1324086040562739,
+    "test_pr_auc": 0.19799446990720782,
+    "test_roc_auc": 0.6440793842273487
+  },
+  {
+    "ablation": "multi_text",
+    "seed": 49,
+    "reused": false,
+    "report": "\\\\nas.ads.mwn.de\\go39lop\\Desktop\\Archive\\results\\purged_multi_text_seed49_20260917T063632Z_cd54333c\\experiment_report.json",
+    "dataset_hash_verified": true,
+    "test_mcc": 0.14037698369640847,
+    "test_pr_auc": 0.20614117879808802,
+    "test_roc_auc": 0.6519888652418093
+  },
+  {
+    "ablation": "tech_only",
+    "seed": 50,
+    "reused": false,
+    "report": "\\\\nas.ads.mwn.de\\go39lop\\Desktop\\Archive\\results\\purged_tech_only_seed50_20260917T071844Z_94c4fa05\\experiment_report.json",
+    "dataset_hash_verified": true,
+    "test_mcc": 0.1370924696650225,
+    "test_pr_auc": 0.19879291926773485,
+    "test_roc_auc": 0.6441124633563845
+  },
+  {
+    "ablation": "multi_pure",
+    "seed": 50,
+    "reused": false,
+    "report": "\\\\nas.ads.mwn.de\\go39lop\\Desktop\\Archive\\results\\purged_multi_pure_seed50_20260917T074208Z_f5c53b2a\\experiment_report.json",
+    "dataset_hash_verified": true,
+    "test_mcc": 0.12200590138676898,
+    "test_pr_auc": 0.18798737398115378,
+    "test_roc_auc": 0.626287410739715
+  },
+  {
+    "ablation": "multi_text",
+    "seed": 50,
+    "reused": false,
+    "report": "\\\\nas.ads.mwn.de\\go39lop\\Desktop\\Archive\\results\\purged_multi_text_seed50_20260917T083700Z_f0255936\\experiment_report.json",
+    "dataset_hash_verified": true,
+    "test_mcc": 0.13753692803131903,
+    "test_pr_auc": 0.1957524894095306,
+    "test_roc_auc": 0.6385693903478145
+  },
+  {
+    "ablation": "tech_only",
+    "seed": 51,
+    "reused": false,
+    "report": "\\\\nas.ads.mwn.de\\go39lop\\Desktop\\Archive\\results\\purged_tech_only_seed51_20260917T093212Z_9ad94357\\experiment_report.json",
+    "dataset_hash_verified": true,
+    "test_mcc": 0.1429545428612905,
+    "test_pr_auc": 0.20250869492156873,
+    "test_roc_auc": 0.6502527892711849
+  },
+  {
+    "ablation": "multi_pure",
+    "seed": 51,
+    "reused": false,
+    "report": "\\\\nas.ads.mwn.de\\go39lop\\Desktop\\Archive\\results\\purged_multi_pure_seed51_20260917T095310Z_ec2c653c\\experiment_report.json",
+    "dataset_hash_verified": true,
+    "test_mcc": 0.11490870978771743,
+    "test_pr_auc": 0.18459578526673429,
+    "test_roc_auc": 0.6219925731325822
+  },
+  {
+    "ablation": "multi_text",
+    "seed": 51,
+    "reused": false,
+    "report": "\\\\nas.ads.mwn.de\\go39lop\\Desktop\\Archive\\results\\purged_multi_text_seed51_20260917T111207Z_8e2f1e2e\\experiment_report.json",
+    "dataset_hash_verified": true,
+    "test_mcc": 0.12318109928120387,
+    "test_pr_auc": 0.20280676935210534,
+    "test_roc_auc": 0.6440905309432474
+  },
+  {
+    "ablation": "tech_only",
+    "seed": 52,
+    "reused": false,
+    "report": "\\\\nas.ads.mwn.de\\go39lop\\Desktop\\Archive\\results\\purged_tech_only_seed52_20260917T120302Z_eadd7a2e\\experiment_report.json",
+    "dataset_hash_verified": true,
+    "test_mcc": 0.14131217701537693,
+    "test_pr_auc": 0.19948913483237032,
+    "test_roc_auc": 0.64943623129537
+  },
+  {
+    "ablation": "multi_pure",
+    "seed": 52,
+    "reused": false,
+    "report": "\\\\nas.ads.mwn.de\\go39lop\\Desktop\\Archive\\results\\purged_multi_pure_seed52_20260917T122402Z_81ceee1c\\experiment_report.json",
+    "dataset_hash_verified": true,
+    "test_mcc": 0.11641722722837686,
+    "test_pr_auc": 0.18628546168900106,
+    "test_roc_auc": 0.6278301362831311
+  },
+  {
+    "ablation": "multi_text",
+    "seed": 52,
+    "reused": false,
+    "report": "\\\\nas.ads.mwn.de\\go39lop\\Desktop\\Archive\\results\\purged_multi_text_seed52_20260917T131821Z_1c030679\\experiment_report.json",
+    "dataset_hash_verified": true,
+    "test_mcc": 0.13019057616285348,
+    "test_pr_auc": 0.19884558778189815,
+    "test_roc_auc": 0.6408160333492734
+  }
+]

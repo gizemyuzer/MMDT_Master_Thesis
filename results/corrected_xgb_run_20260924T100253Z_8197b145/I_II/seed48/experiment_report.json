@@ -1,0 +1,71 @@
+{
+  "status": "PROVISIONAL_PASS",
+  "protocol": "corrected_xgb_flat20_validation_search_v1",
+  "config": "I+II",
+  "seed": 48,
+  "source_sha256": {
+    "technical": "b7a9de11255319edebcb0c1042ca4cd60da2c66ab3fe906beaca3549eea45287",
+    "fundamental": "f7763fde9f81758ccf3c3b0df3265d5b6a782a809defb1d135ffe2ce55ebe731",
+    "text": "618f5c70583bbf71a652cc57d663bb0d3f63774131308a4394b4500d11094286"
+  },
+  "test_evaluated": true,
+  "final_thesis_ready": false,
+  "threshold": 0.5033974120250115,
+  "best_iteration": 14,
+  "val_metrics": {
+    "roc_auc": 0.6510722129593856,
+    "pr_auc": 0.23226645165808618,
+    "mcc": 0.1807740953980051,
+    "accuracy": 0.7178174144784115,
+    "precision": 0.2353172780366166,
+    "recall": 0.4816655473472129,
+    "f1": 0.31616998765649795,
+    "confusion_matrix": [
+      [
+        71747,
+        23306
+      ],
+      [
+        7718,
+        7172
+      ]
+    ]
+  },
+  "params": {
+    "max_depth": 4,
+    "learning_rate": 0.09131564603356762,
+    "subsample": 0.5370295782348484,
+    "colsample_bytree": 0.7958609958307932,
+    "min_child_weight": 11.336414912963528,
+    "gamma": 0.5960700857797343,
+    "reg_alpha": 6.380877309831033,
+    "reg_lambda": 6.629222172901802,
+    "scale_pos_weight": 7.240979212969015
+  },
+  "test_metrics": {
+    "roc_auc": 0.6698315586840693,
+    "pr_auc": 0.21886124389790287,
+    "mcc": 0.16697173468070306,
+    "accuracy": 0.6898814113643011,
+    "precision": 0.2144901723808918,
+    "recall": 0.5129297231518102,
+    "f1": 0.3024893473873066,
+    "confusion_matrix": [
+      [
+        93667,
+        37047
+      ],
+      [
+        9606,
+        10116
+      ]
+    ]
+  },
+  "elapsed_minutes": 0.9370044566690922,
+  "output_sha256": {
+    "xgboost_model.json": "b5cae3e526f1a197643a00c84fc275830c5aac5172b1d26423d811d8f25cdfae",
+    "val_predictions.npz": "b3afd3f6d8dc99b701cbce720d77fe569cd777624dde49754f921d3152d39163",
+    "test_predictions.npz": "826430e04336a2436bc8bcd138c38d26d2ee0960630732fe20bdd1caf9902e0a",
+    "learning_curve.json": "2575528e0d227889644af1ecee00864d87ee42b3ee405c456f4a716c18163846"
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "status": "FAILED",
+  "purpose": "Discover accessible CIK source schemas; does not verify issuer identity",
+  "error_type": "OperationalError"
+}

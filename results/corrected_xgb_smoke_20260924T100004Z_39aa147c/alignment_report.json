@@ -1,0 +1,26 @@
+{
+  "I+II+IV": {
+    "report": "\\\\nas.ads.mwn.de\\go39lop\\Desktop\\Archive\\results\\corrected_I_II_IV_train_two_repairs_seed42_20260923T175023Z_2de97c52\\experiment_report.json",
+    "report_sha256": "a4fb3057a10cba43982c441b2492359994b108966bb15eb58c03657ea7d64991",
+    "predictions": {
+      "val": "328bcd946767dd954ba998c0580f0df227145ccde6aa5e9448934470fd2aafa5",
+      "test": "ee459be2869f2a06bdb2a1524fe909edf6b5beff0ac62fbea4bfb1393ba27db3"
+    }
+  },
+  "I+II": {
+    "report": "\\\\nas.ads.mwn.de\\go39lop\\Desktop\\Archive\\results\\corrected_I_II_seed42_20260921T173551Z_cc3ee550\\experiment_report.json",
+    "report_sha256": "9c3ef89fdf84e06b4fdc8202957a4211e22e2d623190f6294983c9beb9c75630",
+    "predictions": {
+      "val": "d3825e29dd12a112a570ac20256c4854b33eaa6fd2a4fa21585040198c89baff",
+      "test": "6b8c11c70df27a2cb3bf6e2c81a7041ea001ce729ad825fb5c0c1948fdd2a43d"
+    }
+  },
+  "I": {
+    "report": "\\\\nas.ads.mwn.de\\go39lop\\Desktop\\Archive\\results\\corrected_I_seed42_20260922T091319Z_dd1d2a72\\experiment_report.json",
+    "report_sha256": "36bd1bd0b61528f24f6cb126932700a703b1fa2677ae67c8f1e44668ea794053",
+    "predictions": {
+      "val": "0759c139d9002f88cc7f937248c0af832dc8fb86b5f4ef3d639439056712af03",
+      "test": "48a2cc19f32a8ecf8c0ad556de97468be2c05948aee8b75fb8ec0d3f9d1eaf65"
+    }
+  }
+}

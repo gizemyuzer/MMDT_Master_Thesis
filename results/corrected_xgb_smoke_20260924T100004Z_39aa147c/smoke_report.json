@@ -1,0 +1,33 @@
+{
+  "status": "PASS",
+  "test_evaluated": false,
+  "configs": {
+    "I": {
+      "features": 640,
+      "train": 6000,
+      "validation": 3000,
+      "best_iteration": 2,
+      "actual_device": "cpu"
+    },
+    "I+II": {
+      "features": 760,
+      "train": 6000,
+      "validation": 3000,
+      "best_iteration": 2,
+      "actual_device": "cpu"
+    },
+    "I+II+IV": {
+      "features": 1140,
+      "train": 6000,
+      "validation": 3000,
+      "best_iteration": 7,
+      "actual_device": "cpu"
+    }
+  },
+  "source_sha256": {
+    "technical": "b7a9de11255319edebcb0c1042ca4cd60da2c66ab3fe906beaca3549eea45287",
+    "fundamental": "f7763fde9f81758ccf3c3b0df3265d5b6a782a809defb1d135ffe2ce55ebe731",
+    "text": "618f5c70583bbf71a652cc57d663bb0d3f63774131308a4394b4500d11094286"
+  },
+  "alignment": "exact full val/test keys verified; smoke trained on subset"
+}

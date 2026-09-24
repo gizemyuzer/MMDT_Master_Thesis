@@ -1,0 +1,379 @@
+[Universe] Cache: 400 hisse, 9 sektör → datasets/universe.csv
+FULL EXPERIMENT | I+II+IV | seed 47 | up to 30 epochs | batch size 64
+Output directory: \\nas.ads.mwn.de\go39lop\Desktop\Archive\results\purged_multi_text_seed47_20260917T013512Z_ef74ebf6
+Test is evaluated only after validation-based checkpoint selection.
+GPU: NVIDIA A40
+  [Metin] Modalite IV bağlandı: 9 olay + 9 LM kolonu
+          Kapsama: 395/395 firma (%100.0)
+          LM kolonları dolu satır oranı: %94.0
+
+  Feature split → tech: 32 cols ('tech',) | fund: 25 cols ('fund', 'text')
+[Purge] Cached-date upper bounds; unknown endpoints excluded conservatively.
+[Purge] Train: {'rows': 757567, 'crossing_upper_bound': 5102, 'unknown': 2798, 'retained_endpoints': 749667}
+[Purge] Validation: {'rows': 115138, 'crossing_upper_bound': 4516, 'unknown': 482, 'retained_endpoints': 110140}
+  Train  (2019-12-31'e kadar): 757,567 satır | Min: 2010-01-04 | Max: 2019-12-31
+  Val    (2020-01-01 → 2021-12-31): 115,138 satır | Min: 2020-01-02 | Max: 2021-12-31
+  Test   (2022-01-01 → 2024-12-31): 155,550 satır | Min: 2022-01-03 | Max: 2024-12-02
+
+  Dual-stream Dataset'ler oluşturuluyor...
+  [Train]
+  DualStreamSequenceDataset: 742,162 sequences | seq_len=20 | tech_dim=32 | fund_dim=25 | Kriz oranı: 12.4%
+  [Val]
+  DualStreamSequenceDataset: 105,436 sequences | seq_len=20 | tech_dim=32 | fund_dim=25 | Kriz oranı: 12.5%
+  [Test]
+  DualStreamSequenceDataset: 151,161 sequences | seq_len=20 | tech_dim=32 | fund_dim=25 | Kriz oranı: 13.1%
+  [Sampling] WeightedRandomSampler train'e uygulanıyor (val/test doğal kalıyor)...
+Actual test dates: 2022-01-31 00:00:00 to 2024-12-02 00:00:00
+Full-panel train sequences: 742162
+Full-panel validation sequences: 105436
+
+PURGED_multi_text_seed47 Eğitimi Başlıyor (cuda) | monitor=pr_auc | lr=0.0001 | wd=0.01 | patience=8 | scheduler=plateau...
+[train] batch 1/11596 | elapsed 0.0 min
+[train] batch 500/11596 | elapsed 0.2 min
+[train] batch 1000/11596 | elapsed 0.4 min
+[train] batch 1500/11596 | elapsed 0.6 min
+[train] batch 2000/11596 | elapsed 0.7 min
+[train] batch 2500/11596 | elapsed 0.9 min
+[train] batch 3000/11596 | elapsed 1.1 min
+[train] batch 3500/11596 | elapsed 1.2 min
+[train] batch 4000/11596 | elapsed 1.4 min
+[train] batch 4500/11596 | elapsed 1.6 min
+[train] batch 5000/11596 | elapsed 1.8 min
+[train] batch 5500/11596 | elapsed 1.9 min
+[train] batch 6000/11596 | elapsed 2.1 min
+[train] batch 6500/11596 | elapsed 2.3 min
+[train] batch 7000/11596 | elapsed 2.4 min
+[train] batch 7500/11596 | elapsed 2.6 min
+[train] batch 8000/11596 | elapsed 2.8 min
+[train] batch 8500/11596 | elapsed 3.0 min
+[train] batch 9000/11596 | elapsed 3.1 min
+[train] batch 9500/11596 | elapsed 3.3 min
+[train] batch 10000/11596 | elapsed 3.5 min
+[train] batch 10500/11596 | elapsed 3.7 min
+[train] batch 11000/11596 | elapsed 3.8 min
+[train] batch 11500/11596 | elapsed 4.0 min
+[train] batch 11596/11596 | elapsed 4.0 min
+[validation] batch 1/1648 | elapsed 0.0 min
+[validation] batch 500/1648 | elapsed 0.0 min
+[validation] batch 1000/1648 | elapsed 0.1 min
+[validation] batch 1500/1648 | elapsed 0.1 min
+[validation] batch 1648/1648 | elapsed 0.1 min
+Epoch 01/30 | Loss T:0.1589 V:0.1660 | ROC-AUC T:0.695 V:0.579 | PR-AUC T:0.670 V:0.164 | P:0.160 R:0.534
+  ✓ Yeni en iyi model kaydedildi (pr_auc: 0.1636)
+[train] batch 1/11596 | elapsed 0.0 min
+[train] batch 500/11596 | elapsed 0.2 min
+[train] batch 1000/11596 | elapsed 0.3 min
+[train] batch 1500/11596 | elapsed 0.5 min
+[train] batch 2000/11596 | elapsed 0.7 min
+[train] batch 2500/11596 | elapsed 0.9 min
+[train] batch 3000/11596 | elapsed 1.0 min
+[train] batch 3500/11596 | elapsed 1.2 min
+[train] batch 4000/11596 | elapsed 1.4 min
+[train] batch 4500/11596 | elapsed 1.5 min
+[train] batch 5000/11596 | elapsed 1.7 min
+[train] batch 5500/11596 | elapsed 1.9 min
+[train] batch 6000/11596 | elapsed 2.1 min
+[train] batch 6500/11596 | elapsed 2.2 min
+[train] batch 7000/11596 | elapsed 2.4 min
+[train] batch 7500/11596 | elapsed 2.6 min
+[train] batch 8000/11596 | elapsed 2.7 min
+[train] batch 8500/11596 | elapsed 2.9 min
+[train] batch 9000/11596 | elapsed 3.1 min
+[train] batch 9500/11596 | elapsed 3.3 min
+[train] batch 10000/11596 | elapsed 3.4 min
+[train] batch 10500/11596 | elapsed 3.6 min
+[train] batch 11000/11596 | elapsed 3.8 min
+[train] batch 11500/11596 | elapsed 3.9 min
+[train] batch 11596/11596 | elapsed 4.0 min
+[validation] batch 1/1648 | elapsed 0.0 min
+[validation] batch 500/1648 | elapsed 0.0 min
+[validation] batch 1000/1648 | elapsed 0.1 min
+[validation] batch 1500/1648 | elapsed 0.1 min
+[validation] batch 1648/1648 | elapsed 0.1 min
+Epoch 02/30 | Loss T:0.1506 V:0.1773 | ROC-AUC T:0.742 V:0.556 | PR-AUC T:0.722 V:0.158 | P:0.150 R:0.541
+[train] batch 1/11596 | elapsed 0.0 min
+[train] batch 500/11596 | elapsed 0.2 min
+[train] batch 1000/11596 | elapsed 0.3 min
+[train] batch 1500/11596 | elapsed 0.5 min
+[train] batch 2000/11596 | elapsed 0.7 min
+[train] batch 2500/11596 | elapsed 0.9 min
+[train] batch 3000/11596 | elapsed 1.0 min
+[train] batch 3500/11596 | elapsed 1.2 min
+[train] batch 4000/11596 | elapsed 1.4 min
+[train] batch 4500/11596 | elapsed 1.5 min
+[train] batch 5000/11596 | elapsed 1.7 min
+[train] batch 5500/11596 | elapsed 1.9 min
+[train] batch 6000/11596 | elapsed 2.1 min
+[train] batch 6500/11596 | elapsed 2.2 min
+[train] batch 7000/11596 | elapsed 2.4 min
+[train] batch 7500/11596 | elapsed 2.6 min
+[train] batch 8000/11596 | elapsed 2.7 min
+[train] batch 8500/11596 | elapsed 2.9 min
+[train] batch 9000/11596 | elapsed 3.1 min
+[train] batch 9500/11596 | elapsed 3.3 min
+[train] batch 10000/11596 | elapsed 3.4 min
+[train] batch 10500/11596 | elapsed 3.6 min
+[train] batch 11000/11596 | elapsed 3.8 min
+[train] batch 11500/11596 | elapsed 3.9 min
+[train] batch 11596/11596 | elapsed 4.0 min
+[validation] batch 1/1648 | elapsed 0.0 min
+[validation] batch 500/1648 | elapsed 0.0 min
+[validation] batch 1000/1648 | elapsed 0.1 min
+[validation] batch 1500/1648 | elapsed 0.1 min
+[validation] batch 1648/1648 | elapsed 0.1 min
+Epoch 03/30 | Loss T:0.1448 V:0.1716 | ROC-AUC T:0.767 V:0.556 | PR-AUC T:0.750 V:0.153 | P:0.152 R:0.495
+[train] batch 1/11596 | elapsed 0.0 min
+[train] batch 500/11596 | elapsed 0.2 min
+[train] batch 1000/11596 | elapsed 0.4 min
+[train] batch 1500/11596 | elapsed 0.5 min
+[train] batch 2000/11596 | elapsed 0.7 min
+[train] batch 2500/11596 | elapsed 0.9 min
+[train] batch 3000/11596 | elapsed 1.0 min
+[train] batch 3500/11596 | elapsed 1.2 min
+[train] batch 4000/11596 | elapsed 1.4 min
+[train] batch 4500/11596 | elapsed 1.6 min
+[train] batch 5000/11596 | elapsed 1.7 min
+[train] batch 5500/11596 | elapsed 1.9 min
+[train] batch 6000/11596 | elapsed 2.1 min
+[train] batch 6500/11596 | elapsed 2.2 min
+[train] batch 7000/11596 | elapsed 2.4 min
+[train] batch 7500/11596 | elapsed 2.6 min
+[train] batch 8000/11596 | elapsed 2.7 min
+[train] batch 8500/11596 | elapsed 2.9 min
+[train] batch 9000/11596 | elapsed 3.1 min
+[train] batch 9500/11596 | elapsed 3.3 min
+[train] batch 10000/11596 | elapsed 3.4 min
+[train] batch 10500/11596 | elapsed 3.6 min
+[train] batch 11000/11596 | elapsed 3.8 min
+[train] batch 11500/11596 | elapsed 4.0 min
+[train] batch 11596/11596 | elapsed 4.0 min
+[validation] batch 1/1648 | elapsed 0.0 min
+[validation] batch 500/1648 | elapsed 0.0 min
+[validation] batch 1000/1648 | elapsed 0.1 min
+[validation] batch 1500/1648 | elapsed 0.1 min
+[validation] batch 1648/1648 | elapsed 0.1 min
+Epoch 04/30 | Loss T:0.1395 V:0.1850 | ROC-AUC T:0.788 V:0.543 | PR-AUC T:0.772 V:0.147 | P:0.147 R:0.517
+[train] batch 1/11596 | elapsed 0.0 min
+[train] batch 500/11596 | elapsed 0.2 min
+[train] batch 1000/11596 | elapsed 0.3 min
+[train] batch 1500/11596 | elapsed 0.5 min
+[train] batch 2000/11596 | elapsed 0.7 min
+[train] batch 2500/11596 | elapsed 0.9 min
+[train] batch 3000/11596 | elapsed 1.0 min
+[train] batch 3500/11596 | elapsed 1.2 min
+[train] batch 4000/11596 | elapsed 1.4 min
+[train] batch 4500/11596 | elapsed 1.5 min
+[train] batch 5000/11596 | elapsed 1.7 min
+[train] batch 5500/11596 | elapsed 1.9 min
+[train] batch 6000/11596 | elapsed 2.1 min
+[train] batch 6500/11596 | elapsed 2.2 min
+[train] batch 7000/11596 | elapsed 2.4 min
+[train] batch 7500/11596 | elapsed 2.6 min
+[train] batch 8000/11596 | elapsed 2.7 min
+[train] batch 8500/11596 | elapsed 2.9 min
+[train] batch 9000/11596 | elapsed 3.1 min
+[train] batch 9500/11596 | elapsed 3.3 min
+[train] batch 10000/11596 | elapsed 3.4 min
+[train] batch 10500/11596 | elapsed 3.6 min
+[train] batch 11000/11596 | elapsed 3.8 min
+[train] batch 11500/11596 | elapsed 3.9 min
+[train] batch 11596/11596 | elapsed 4.0 min
+[validation] batch 1/1648 | elapsed 0.0 min
+[validation] batch 500/1648 | elapsed 0.0 min
+[validation] batch 1000/1648 | elapsed 0.1 min
+[validation] batch 1500/1648 | elapsed 0.1 min
+[validation] batch 1648/1648 | elapsed 0.1 min
+Epoch 05/30 | Loss T:0.1347 V:0.1863 | ROC-AUC T:0.806 V:0.540 | PR-AUC T:0.789 V:0.142 | P:0.148 R:0.461
+[train] batch 1/11596 | elapsed 0.0 min
+[train] batch 500/11596 | elapsed 0.2 min
+[train] batch 1000/11596 | elapsed 0.3 min
+[train] batch 1500/11596 | elapsed 0.5 min
+[train] batch 2000/11596 | elapsed 0.7 min
+[train] batch 2500/11596 | elapsed 0.9 min
+[train] batch 3000/11596 | elapsed 1.0 min
+[train] batch 3500/11596 | elapsed 1.2 min
+[train] batch 4000/11596 | elapsed 1.4 min
+[train] batch 4500/11596 | elapsed 1.5 min
+[train] batch 5000/11596 | elapsed 1.7 min
+[train] batch 5500/11596 | elapsed 1.9 min
+[train] batch 6000/11596 | elapsed 2.1 min
+[train] batch 6500/11596 | elapsed 2.2 min
+[train] batch 7000/11596 | elapsed 2.4 min
+[train] batch 7500/11596 | elapsed 2.6 min
+[train] batch 8000/11596 | elapsed 2.7 min
+[train] batch 8500/11596 | elapsed 2.9 min
+[train] batch 9000/11596 | elapsed 3.1 min
+[train] batch 9500/11596 | elapsed 3.3 min
+[train] batch 10000/11596 | elapsed 3.4 min
+[train] batch 10500/11596 | elapsed 3.6 min
+[train] batch 11000/11596 | elapsed 3.8 min
+[train] batch 11500/11596 | elapsed 4.0 min
+[train] batch 11596/11596 | elapsed 4.0 min
+[validation] batch 1/1648 | elapsed 0.0 min
+[validation] batch 500/1648 | elapsed 0.0 min
+[validation] batch 1000/1648 | elapsed 0.1 min
+[validation] batch 1500/1648 | elapsed 0.1 min
+[validation] batch 1648/1648 | elapsed 0.1 min
+Epoch 06/30 | Loss T:0.1300 V:0.1827 | ROC-AUC T:0.823 V:0.539 | PR-AUC T:0.807 V:0.146 | P:0.150 R:0.441
+[train] batch 1/11596 | elapsed 0.0 min
+[train] batch 500/11596 | elapsed 0.2 min
+[train] batch 1000/11596 | elapsed 0.3 min
+[train] batch 1500/11596 | elapsed 0.5 min
+[train] batch 2000/11596 | elapsed 0.7 min
+[train] batch 2500/11596 | elapsed 0.9 min
+[train] batch 3000/11596 | elapsed 1.0 min
+[train] batch 3500/11596 | elapsed 1.2 min
+[train] batch 4000/11596 | elapsed 1.4 min
+[train] batch 4500/11596 | elapsed 1.5 min
+[train] batch 5000/11596 | elapsed 1.7 min
+[train] batch 5500/11596 | elapsed 1.9 min
+[train] batch 6000/11596 | elapsed 2.1 min
+[train] batch 6500/11596 | elapsed 2.2 min
+[train] batch 7000/11596 | elapsed 2.4 min
+[train] batch 7500/11596 | elapsed 2.6 min
+[train] batch 8000/11596 | elapsed 2.7 min
+[train] batch 8500/11596 | elapsed 2.9 min
+[train] batch 9000/11596 | elapsed 3.1 min
+[train] batch 9500/11596 | elapsed 3.3 min
+[train] batch 10000/11596 | elapsed 3.4 min
+[train] batch 10500/11596 | elapsed 3.6 min
+[train] batch 11000/11596 | elapsed 3.8 min
+[train] batch 11500/11596 | elapsed 3.9 min
+[train] batch 11596/11596 | elapsed 4.0 min
+[validation] batch 1/1648 | elapsed 0.0 min
+[validation] batch 500/1648 | elapsed 0.0 min
+[validation] batch 1000/1648 | elapsed 0.1 min
+[validation] batch 1500/1648 | elapsed 0.1 min
+[validation] batch 1648/1648 | elapsed 0.1 min
+Epoch 07/30 | Loss T:0.1252 V:0.1823 | ROC-AUC T:0.838 V:0.542 | PR-AUC T:0.822 V:0.146 | P:0.154 R:0.412
+[train] batch 1/11596 | elapsed 0.0 min
+[train] batch 500/11596 | elapsed 0.2 min
+[train] batch 1000/11596 | elapsed 0.3 min
+[train] batch 1500/11596 | elapsed 0.5 min
+[train] batch 2000/11596 | elapsed 0.7 min
+[train] batch 2500/11596 | elapsed 0.9 min
+[train] batch 3000/11596 | elapsed 1.0 min
+[train] batch 3500/11596 | elapsed 1.2 min
+[train] batch 4000/11596 | elapsed 1.4 min
+[train] batch 4500/11596 | elapsed 1.5 min
+[train] batch 5000/11596 | elapsed 1.7 min
+[train] batch 5500/11596 | elapsed 1.9 min
+[train] batch 6000/11596 | elapsed 2.1 min
+[train] batch 6500/11596 | elapsed 2.2 min
+[train] batch 7000/11596 | elapsed 2.4 min
+[train] batch 7500/11596 | elapsed 2.6 min
+[train] batch 8000/11596 | elapsed 2.7 min
+[train] batch 8500/11596 | elapsed 2.9 min
+[train] batch 9000/11596 | elapsed 3.1 min
+[train] batch 9500/11596 | elapsed 3.3 min
+[train] batch 10000/11596 | elapsed 3.4 min
+[train] batch 10500/11596 | elapsed 3.6 min
+[train] batch 11000/11596 | elapsed 3.8 min
+[train] batch 11500/11596 | elapsed 4.0 min
+[train] batch 11596/11596 | elapsed 4.0 min
+[validation] batch 1/1648 | elapsed 0.0 min
+[validation] batch 500/1648 | elapsed 0.0 min
+[validation] batch 1000/1648 | elapsed 0.1 min
+[validation] batch 1500/1648 | elapsed 0.1 min
+[validation] batch 1648/1648 | elapsed 0.1 min
+Epoch 08/30 | Loss T:0.1227 V:0.1995 | ROC-AUC T:0.846 V:0.541 | PR-AUC T:0.829 V:0.144 | P:0.146 R:0.471
+[train] batch 1/11596 | elapsed 0.0 min
+[train] batch 500/11596 | elapsed 0.2 min
+[train] batch 1000/11596 | elapsed 0.4 min
+[train] batch 1500/11596 | elapsed 0.5 min
+[train] batch 2000/11596 | elapsed 0.7 min
+[train] batch 2500/11596 | elapsed 0.9 min
+[train] batch 3000/11596 | elapsed 1.0 min
+[train] batch 3500/11596 | elapsed 1.2 min
+[train] batch 4000/11596 | elapsed 1.4 min
+[train] batch 4500/11596 | elapsed 1.5 min
+[train] batch 5000/11596 | elapsed 1.7 min
+[train] batch 5500/11596 | elapsed 1.9 min
+[train] batch 6000/11596 | elapsed 2.1 min
+[train] batch 6500/11596 | elapsed 2.2 min
+[train] batch 7000/11596 | elapsed 2.4 min
+[train] batch 7500/11596 | elapsed 2.6 min
+[train] batch 8000/11596 | elapsed 2.7 min
+[train] batch 8500/11596 | elapsed 2.9 min
+[train] batch 9000/11596 | elapsed 3.1 min
+[train] batch 9500/11596 | elapsed 3.3 min
+[train] batch 10000/11596 | elapsed 3.4 min
+[train] batch 10500/11596 | elapsed 3.6 min
+[train] batch 11000/11596 | elapsed 3.8 min
+[train] batch 11500/11596 | elapsed 3.9 min
+[train] batch 11596/11596 | elapsed 4.0 min
+[validation] batch 1/1648 | elapsed 0.0 min
+[validation] batch 500/1648 | elapsed 0.0 min
+[validation] batch 1000/1648 | elapsed 0.1 min
+[validation] batch 1500/1648 | elapsed 0.1 min
+[validation] batch 1648/1648 | elapsed 0.1 min
+Epoch 09/30 | Loss T:0.1206 V:0.1958 | ROC-AUC T:0.852 V:0.546 | PR-AUC T:0.836 V:0.147 | P:0.149 R:0.455
+  Early Stopping: Epoch 9'de duruldu (En iyi pr_auc: 0.1636)
+[validation] batch 1/1648 | elapsed 0.0 min
+[validation] batch 500/1648 | elapsed 0.0 min
+[validation] batch 1000/1648 | elapsed 0.1 min
+[validation] batch 1500/1648 | elapsed 0.1 min
+[validation] batch 1648/1648 | elapsed 0.1 min
+
+════════════════════════════════════════════════════════════
+  PURGED_multi_text_seed47 — VALIDATION SET
+════════════════════════════════════════════════════════════
+  Threshold-bağımsız (ranking):
+    ROC-AUC: 0.5787
+    PR-AUC:  0.1636
+  Optimal Threshold (MCC max from VAL): 0.5212 (val MCC=0.0894)
+  Threshold-bağımlı (eşik=0.5212):
+    Accuracy:  0.6661
+    MCC:       0.0894
+    Precision: 0.1690
+    Recall:    0.4247
+    F1:        0.2418
+
+=== PURGED_multi_text_seed47 Validation Classification Report ===
+              precision    recall  f1-score   support
+
+  Stable (0)       0.89      0.70      0.79     92214
+    Risk (1)       0.17      0.42      0.24     13222
+
+    accuracy                           0.67    105436
+   macro avg       0.53      0.56      0.51    105436
+weighted avg       0.80      0.67      0.72    105436
+
+[test] batch 1/2362 | elapsed 0.0 min
+[test] batch 500/2362 | elapsed 0.0 min
+[test] batch 1000/2362 | elapsed 0.1 min
+[test] batch 1500/2362 | elapsed 0.1 min
+[test] batch 2000/2362 | elapsed 0.2 min
+[test] batch 2362/2362 | elapsed 0.2 min
+
+════════════════════════════════════════════════════════════
+  PURGED_multi_text_seed47 — TEST SET (hold-out, 2024+)
+════════════════════════════════════════════════════════════
+  Threshold-bağımsız (ranking):
+    ROC-AUC: 0.6611
+    PR-AUC:  0.2095
+  Threshold-bağımlı (val'dan seçilen eşik=0.5212):
+    Accuracy:  0.6886
+    MCC:       0.1534
+    Precision: 0.2080
+    Recall:    0.4923
+    F1:        0.2925
+
+=== PURGED_multi_text_seed47 Test Classification Report ===
+              precision    recall  f1-score   support
+
+  Stable (0)       0.90      0.72      0.80    131398
+    Risk (1)       0.21      0.49      0.29     19763
+
+    accuracy                           0.69    151161
+   macro avg       0.56      0.61      0.55    151161
+weighted avg       0.81      0.69      0.73    151161
+
+
+  Generalization gap (val → test):
+    ROC-AUC: 0.5787 → 0.6611 (Δ +0.0824)
+    PR-AUC:  0.1636 → 0.2095 (Δ +0.0459)
+    MCC:     0.0894 → 0.1534 (Δ +0.0641)
+PASS | purged I+II+IV seed47 | training + evaluation + export: 38.6 min
+Historical outputs unchanged. Selected model, preprocessing and indexed predictions saved.
+Report: \\nas.ads.mwn.de\go39lop\Desktop\Archive\results\purged_multi_text_seed47_20260917T013512Z_ef74ebf6\experiment_report.json

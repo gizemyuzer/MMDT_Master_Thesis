@@ -1,0 +1,6 @@
+{
+  "status": "METADATA_EXPORTED",
+  "purpose": "Discover accessible CIK source schemas; does not verify issuer identity",
+  "candidate_tables": 1596,
+  "candidate_columns": 2418
+}

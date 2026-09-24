@@ -1,0 +1,115 @@
+{
+  "status": "PASS",
+  "seed": 42,
+  "device": "cuda",
+  "test_evaluated": false,
+  "source_sha256": {
+    "technical": "b7a9de11255319edebcb0c1042ca4cd60da2c66ab3fe906beaca3549eea45287",
+    "fundamental": "f7763fde9f81758ccf3c3b0df3265d5b6a782a809defb1d135ffe2ce55ebe731"
+  },
+  "full_endpoint_counts": {
+    "TrainEndpoint": 756423,
+    "ValidationEndpoint": 109943,
+    "TestEndpoint": 150436
+  },
+  "selected_permnos": [
+    10026,
+    10693,
+    11343,
+    11644,
+    11809,
+    11891,
+    12503,
+    12650
+  ],
+  "loaded_rows": 29946,
+  "sequence_counts": {
+    "TrainEndpoint": 19824,
+    "ValidationEndpoint": 3777
+  },
+  "technical_columns": [
+    "RSI",
+    "MACD_Hist_Rel",
+    "MACD_Hist_Slope_Rel",
+    "BB_Pct",
+    "BB_Width",
+    "Returns",
+    "Vol_20d",
+    "Vol_5d",
+    "Current_Drawdown_5d",
+    "Current_Drawdown_20d",
+    "Current_Return_5d",
+    "ADX_14",
+    "Price_vs_SMA50",
+    "Price_vs_SMA200",
+    "ROC_10",
+    "Dist_to_Max252d",
+    "Rel_Volume",
+    "Vol_Trend",
+    "Price_vs_Max20d",
+    "RSI_vs_Max20d",
+    "RSI_Divergence",
+    "Vol_Dist_Ratio",
+    "Rel_Returns",
+    "Rel_RSI",
+    "Rel_Vol_20d",
+    "Rel_MACD_Ratio",
+    "Rel_ROC_10",
+    "Rel_ATR_Ratio",
+    "CCI_14",
+    "MFI_14",
+    "WILLR_14",
+    "OBV_Z20"
+  ],
+  "fundamental_columns": [
+    "Liabilities_to_Assets",
+    "Net_Profit_Margin_TTM",
+    "Current_Ratio",
+    "Altman_Z_TTM_Proxy",
+    "Retained_Earnings_TA",
+    "Market_Value_to_Liab_QuarterEnd"
+  ],
+  "losses": {
+    "train": [
+      0.18470431864261627,
+      0.16824156045913696,
+      0.1683337241411209,
+      0.18945704400539398,
+      0.18061071634292603
+    ],
+    "validation": [
+      0.17151793837547302,
+      0.2016928642988205,
+      0.19091850519180298,
+      0.2076684534549713,
+      0.20057550072669983
+    ]
+  },
+  "config": {
+    "tech_dim": 32,
+    "fund_dim": 6,
+    "seq_len": 20,
+    "d_model": 64,
+    "n_heads": 4,
+    "n_layers": 2,
+    "ffn_dim": 256,
+    "dropout": 0.15,
+    "modality": "multimodal",
+    "fusion_type": "cross_attention"
+  },
+  "torch_version": "2.5.1+cu121",
+  "cuda_build": "12.1",
+  "sampler": "Balanced replacement; dedicated generator seed42",
+  "focal_alpha": 1.0,
+  "focal_gamma": 2.0,
+  "limitations": [
+    "Smoke subset only; not a model-performance estimate.",
+    "Fundamentals use RDQ with next-session availability, not vintage point-in-time financial statements."
+  ],
+  "code_sha256": {
+    "H:\\Desktop\\Archive\\run_corrected_smoke.py": "01556e74f75a65fd63f10849e6108f5dc3acbd0af24584fb5518bda9fd14891f",
+    "models\\transformer_model.py": "0612e064fd4c113c58e9380fd221cb8ead33c3aad5fabce8822fa414d9d7e6b9",
+    "models\\losses.py": "c30ce095c44b7cf12587c6ebf0cfbc3db6382b9bbdfa23069742288cbfa0e88a"
+  },
+  "elapsed_minutes": 1.9745717550007005
+}

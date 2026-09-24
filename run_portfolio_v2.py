@@ -28,6 +28,9 @@ import numpy as np, pandas as pd
 from datasets.feature_engineering import prepare_dataset
 from portfolio_engine import simulate_positions, performance
 
+__build__ = "2026-09-12b"   # KAPSAM bloğu + ortak başlangıç + tradable maskesi
+
+
 TEST_START, TEST_END = '2022-01-01', '2024-12-31'
 OUT = 'results'
 
@@ -38,7 +41,27 @@ def load_panel(start=TEST_START, end=TEST_END):
     sub = ds[(ds.index >= start) & (ds.index <= end)]
     px = sub.pivot_table(index=sub.index, columns='Ticker', values='Close')
     ret = px.pct_change().fillna(0.0)
-    return sub, ret
+    # İşlem görebilirlik: o gün fiyatı OLAN hisse. Pasif referansın skorları
+    # sabit sıfır olduğu için bu maske olmadan fiyatsız hisseler de
+    # alınabilir görünüyordu (danışman geri bildirimi #1).
+    tradable = px.notna()
+    return sub, ret, tradable
+
+
+def common_start(scores: dict, rebal, min_names=10):
+    """Tüm stratejilerin en az min_names skora sahip olduğu ilk rebalance günü.
+
+    Model tahminleri test döneminin ilk 19 gününde yok (sekans penceresi
+    dolmuyor), pasif referans ise 1. günden yatırımda. Aynı tarihten
+    başlatmadan karşılaştırma adil değil.
+    """
+    firsts = {}
+    for name, sw in scores.items():
+        ok = [d for d in sorted(rebal)
+              if d in sw.index and sw.loc[d].notna().sum() >= min_names]
+        firsts[name] = ok[0] if ok else None
+    usable = [v for v in firsts.values() if v is not None]
+    return (max(usable) if usable else None), firsts
 
 
 def build_scores(sub, ret, pattern, preds_dir):
@@ -82,7 +105,14 @@ def flat_scores(ret):
 
 
 # ══════════════════════════════════════════════════════════════════
+def _print_build():
+    import hashlib, os
+    h = hashlib.sha256(open(os.path.abspath(__file__), 'rb').read()).hexdigest()[:8]
+    print(f"[{os.path.basename(__file__)}  build {__build__}  sha256 {h}]")
+
+
 def main():
+    _print_build()
     ap = argparse.ArgumentParser()
     ap.add_argument('--exclude-pct', type=float, default=20.0)
     ap.add_argument('--rebalance', type=int, default=20)
@@ -97,34 +127,52 @@ def main():
     args = ap.parse_args()
 
     tag = os.path.basename(args.pattern).replace('_seed*.npz', '').replace('*', '')
-    sub, ret = load_panel()
+    sub, ret, tradable = load_panel()
     days = ret.index
     rebal = set(days[::args.rebalance])
     scores = build_scores(sub, ret, args.pattern, args.preds_dir)
     if not scores:
         raise SystemExit(f"{args.pattern} bulunamadı.")
+    start, firsts = common_start(scores, rebal)
+    if start is None:
+        raise SystemExit("Hiçbir strateji için yeterli skor bulunamadı.")
     print(f"panel: {len(days)} gün × {ret.shape[1]} hisse | "
           f"{len(rebal)} rebalance | stratejiler: {len(scores)}")
+    print("\n" + "═" * 74)
+    print("KAPSAM VE ORTAK BAŞLANGIÇ")
+    print("═" * 74)
+    print(f"  panel ilk günü            : {days[0].date()}")
+    print(f"  ilk rebalance             : {min(rebal).date()}")
+    for name in sorted(firsts, key=lambda k: (firsts[k] is None, firsts[k])):
+        f = firsts[name]
+        print(f"  {name[:34]:<36}{f.date() if f is not None else 'skor yok'}")
+    print(f"  → ORTAK BAŞLANGIÇ         : {start.date()}  "
+          f"({(start - days[0]).days} gün sonra)")
+    print("  Bütün stratejiler bu tarihten başlatılır; panel başından bu tarihe")
+    print("  kadarki dönem hiçbir strateji için hesaba katılmaz.")
 
     # ── ana tablo: maliyet düzeyleri × stratejiler ──
     rows = []
     for cb in args.cost_bps:
         # 1) gerçek al-tut: yalnızca ilk gün kurulur
         net, tov, inv, csh, _ = simulate_positions(
-            flat_scores(ret), ret, {days[0]}, 0.0, cb)
+            flat_scores(ret), ret, {start}, 0.0, cb,
+            tradable=tradable, start_date=start)
         rows.append({**performance(net, 'buy_hold_true'), 'cost_bps': cb,
                      'turnover': tov, 'avg_invested': inv})
 
         # 2) eşit ağırlık, model temposuyla, dışlama yok  ← doğru kontrol
         net, tov, inv, csh, _ = simulate_positions(
-            flat_scores(ret), ret, rebal, 0.0, cb)
+            flat_scores(ret), ret, rebal, 0.0, cb,
+            tradable=tradable, start_date=start)
         rows.append({**performance(net, 'equal_weight_rebal'), 'cost_bps': cb,
                      'turnover': tov, 'avg_invested': inv})
 
         # 3) skor tabanlı stratejiler
         for name, sw in scores.items():
             net, tov, inv, csh, _ = simulate_positions(
-                sw, ret, rebal, args.exclude_pct, cb)
+                sw, ret, rebal, args.exclude_pct, cb,
+                tradable=tradable, start_date=start)
             rows.append({**performance(net, name), 'cost_bps': cb,
                          'turnover': tov, 'avg_invested': inv})
 
@@ -156,7 +204,9 @@ def main():
                 if name in ('oracle', 'inv_vol'):
                     continue
                 net, tov, *_ = simulate_positions(sw, ret, rebal, pct,
-                                                  args.cost_bps[0])
+                                                  args.cost_bps[0],
+                                                  tradable=tradable,
+                                                  start_date=start)
                 srows.append({**performance(net, name), 'exclude_pct': pct,
                               'turnover': tov})
         S = pd.DataFrame(srows)
@@ -202,12 +252,14 @@ def main():
                     fn = make_timing(truth, args.burnin)   # ← AYNI burn-in
                 net, tov, inv, csh, _ = simulate_positions(
                     sw, ret, rebal, args.exclude_pct, cb,
-                    cash_weight_fn=fn, cash_yield=args.cash_yield)
+                    cash_weight_fn=fn, cash_yield=args.cash_yield,
+                    tradable=tradable, start_date=start)
                 crows.append({**performance(net, f'{name}__{mode}'),
                               'mode': mode, 'turnover': tov,
                               'avg_invested': inv, 'avg_cash': csh})
         net, tov, inv, csh, _ = simulate_positions(
-            flat_scores(ret), ret, rebal, 0.0, cb, cash_yield=args.cash_yield)
+            flat_scores(ret), ret, rebal, 0.0, cb, cash_yield=args.cash_yield,
+            tradable=tradable, start_date=start)
         crows.append({**performance(net, 'equal_weight_rebal'),
                       'mode': 'benchmark', 'turnover': tov,
                       'avg_invested': inv, 'avg_cash': 0.0})

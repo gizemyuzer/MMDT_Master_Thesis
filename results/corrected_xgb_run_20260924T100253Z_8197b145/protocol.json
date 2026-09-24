@@ -1,0 +1,52 @@
+{
+  "protocol": "corrected_xgb_flat20_validation_search_v1",
+  "configs": [
+    "I",
+    "I+II",
+    "I+II+IV"
+  ],
+  "seeds": [
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52
+  ],
+  "source_sha256": {
+    "technical": "b7a9de11255319edebcb0c1042ca4cd60da2c66ab3fe906beaca3549eea45287",
+    "fundamental": "f7763fde9f81758ccf3c3b0df3265d5b6a782a809defb1d135ffe2ce55ebe731",
+    "text": "618f5c70583bbf71a652cc57d663bb0d3f63774131308a4394b4500d11094286"
+  },
+  "code_sha256": {
+    "run_corrected_xgboost.py": "7fdb9895131252b3bbb499c2724f25c70646c8c874e085e76eeb9127ddfdf737",
+    "run_corrected_smoke.py": "01556e74f75a65fd63f10849e6108f5dc3acbd0af24584fb5518bda9fd14891f",
+    "run_repaired_text.py": "14c62838a7a17b5957004f0ad4d5c7311e260152e061e5e39c32cc3bcc8234fe"
+  },
+  "xgboost_version": "3.2.0",
+  "numpy_version": "2.0.2",
+  "pandas_version": "2.2.3",
+  "sklearn_version": "1.6.1",
+  "trials": 30,
+  "search_seed": 20260924,
+  "rounds": 1200,
+  "device": "cpu",
+  "jobs": 8,
+  "representation": "20 sessions flattened oldest-to-newest; each lag uses explicit feature allowlist",
+  "preprocessing": "TrainEndpoint median/scaler identical to Transformer; no numeric-column auto-selection",
+  "monitor": "sklearn average precision via negative_average_precision minimized",
+  "threshold": "Transformer 300-point percentile-grid MCC selection on validation",
+  "balancing": "scale_pos_weight=negative/positive TRAIN count; no resampling",
+  "tuning": "TPE on fixed validation 2020-2021; same seed42 and budget per config; not historical CV",
+  "limitations": [
+    "Post-Transformer-test model-family extension; test not used in XGBoost tuning.",
+    "Hyperparameter budgets/losses differ between model families; not equal-compute comparison.",
+    "CIK bridge partly unverified; no content-only interpretation.",
+    "Training seeds are not independent market histories."
+  ]
+}

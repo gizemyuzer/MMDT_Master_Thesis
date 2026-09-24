@@ -1,0 +1,27 @@
+{
+  "status": "PASS",
+  "seed": 42,
+  "samples": 64,
+  "background": 16,
+  "nsamples": 256,
+  "method": "Kernel SHAP over 57 feature-trajectory groups; probability output; fixed training background; l1_reg=0",
+  "selection": "Uniform test endpoint sample, fixed RNG 20260924; seed42 chosen without performance selection",
+  "prediction_max_error": 0.0,
+  "additivity_max_error": 8.940696716308594e-08,
+  "source_hashes": {
+    "technical": "b7a9de11255319edebcb0c1042ca4cd60da2c66ab3fe906beaca3549eea45287",
+    "fundamental": "f7763fde9f81758ccf3c3b0df3265d5b6a782a809defb1d135ffe2ce55ebe731",
+    "text": "618f5c70583bbf71a652cc57d663bb0d3f63774131308a4394b4500d11094286"
+  },
+  "checkpoint_sha256": "44805f848818ed8de306a111c104ef497f402cc0746a33a04eeaf9e0d1b5d034",
+  "preprocessing_sha256": "2540cb1aeb62d6159fec584836616ad4359c643da3ca2eb2cf87a45fa300b981",
+  "shap_version": "0.49.1",
+  "torch_version": "2.5.1+cu121",
+  "output_folder": "results\\shap_repaired_seed42_20260924T092615257012Z",
+  "limitations": [
+    "One seed and sampled endpoints, not an 11-seed global attribution.",
+    "Approximate interventional SHAP; hybrid feature trajectories may be off-distribution; not causal effects.",
+    "Temporal lags are grouped; beeswarm colour is mean scaled input over the window, not the masking variable.",
+    "CIK mapping limitations remain; no word-level text explanation."
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "status": "PRIMARY_SOURCE_UNAVAILABLE_OR_EMPTY",
+  "input_sha256": "9441621b604d739e5624d54a0c38fadee4fc364a9b6c578a8265202f71073523",
+  "requested_gvkeys": 403,
+  "requested_permnos": 398,
+  "tables": {
+    "wrdssec.wciklink_gvkey": {
+      "status": "FAILED",
+      "error_type": "ProgrammingError",
+      "sqlstate": "42501"
+    },
+    "comp.filings": {
+      "status": "FAILED",
+      "error_type": "ProgrammingError",
+      "sqlstate": "42501"
+    }
+  },
+  "limitations": [
+    "Export is evidence for review, not an approved mapping.",
+    "Link dates are retained as supplied; no assumptions about their semantics or automatic overrides."
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "status": "PROVISIONAL_PASS",
+  "configs": [
+    "I",
+    "I+II",
+    "I+II+IV"
+  ],
+  "seeds": [
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52
+  ],
+  "runs": 33,
+  "protocol": "corrected_xgb_flat20_validation_search_v1"
+}

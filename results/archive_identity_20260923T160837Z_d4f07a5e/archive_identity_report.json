@@ -1,0 +1,25 @@
+{
+  "status": "EVIDENCE_EXTRACTED_NOT_IDENTITY_VERIFIED",
+  "output_folder": "\\\\nas.ads.mwn.de\\go39lop\\Desktop\\Archive\\results\\archive_identity_20260923T160837Z_d4f07a5e",
+  "source_hashes": {
+    "manifest": "0c99acea8894f5cb212711b0a66502e4d5285ae609d2399f820f558d2159d913",
+    "links": "9441621b604d739e5624d54a0c38fadee4fc364a9b6c578a8265202f71073523"
+  },
+  "unique_language_filings": 16614,
+  "read_status_counts": {
+    "READ_OK": 16614
+  },
+  "cik_evidence_counts": {
+    "NO_EXPLICIT_CIK": 16612,
+    "SINGLE_CIK_MATCH": 2
+  },
+  "filings_with_registrant_context": 12625,
+  "candidate_intervals": 416,
+  "limitations": [
+    "Cover excerpts require review against independent historical security/company records.",
+    "CIK from manifest or accession is not independent evidence of PERMNO ownership.",
+    "Matching explicit cover CIK alone does not verify historical PERMNO-CIK linkage.",
+    "Only existing 10-K/10-Q archive inspected; absent historical filers cannot be recovered by this script.",
+    "No datasets, mappings, predictions or checkpoints changed."
+  ]
+}

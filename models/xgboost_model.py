@@ -230,7 +230,7 @@ def train_xgboost(X_train, y_train, X_val, y_val, feature_names, train_dates=Non
         verbose=10,
     )
 
-    best_iteration = final_model.best_iteration
+    best_iteration = final_modeal.best_iteration
     print(f"  ✓ Early stopping: Model {best_iteration} ağaçta durdu (max {best_params['n_estimators']})")
 
     # --- Learning Curve ---

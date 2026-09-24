@@ -2,29 +2,32 @@
 run_mechanism_2x2.py — hedef tanımı mı, ön işleme mi? (danışman maddesi E)
 
 SORU
-    Bölüm 6.1 şunu iddia ediyor: modeller ekonomik değer üretemiyor çünkü
-    (i) hedef, volatiliteye göre ölçeklendiği için piyasa çapındaki düşüşleri
-    değil, göreli düşüşleri işaretliyor; ve (ii) kesitsel normalizasyon
-    piyasa SEVİYESİNİ siliyor, dolayısıyla modelin "bugün piyasa riskli mi"
-    sorusuna erişimi yok.
+    Bölüm 6.1 şunu iddia ediyordu: modeller ekonomik değer üretemiyor çünkü
+    (i) hedef volatiliteye göre ölçekli, (ii) kesitsel normalizasyon piyasa
+    SEVİYESİNİ siliyor. İki açıklama birbirine yapıştırılmış ve hiç
+    ayrıştırılmamıştı.
 
-    Bu iki açıklama tezde birlikte öne sürülüyor ama hiçbir yerde
-    AYRIŞTIRILMIYOR. Bu haliyle bir hipotez, bir bulgu değil.
+    ⚠️ Kodu okuduktan sonraki DÜZELTME: gerçek boru hattı piyasa seviyesini
+    SİLMİYOR. datasets/feature_engineering.py tüm teknik ve fundamental
+    kolonlara yalnızca eğitimde fit edilen global bir RobustScaler uygular;
+    tarih-içi normalizasyon sadece 6 firma-fundamental kolonun EK
+    yüzdelik-sıra kopyası olarak vardır. Yani tezin ikinci iddiası kodun
+    yaptığı şeyi yanlış tarif ediyordu. Tasarım buna göre düzeltildi.
 
-TASARIM — tam 2×2 faktöriyel
-                     kesitsel norm (XS)      seviye koruyan (LEVEL)
-    vol-ayarlı hedef        A                        B
-    sabit %10 hedef         C                        D
+TASARIM — 2×2 faktöriyel
+                        tez ön işlemesi        seviye silinmiş (xs_all)
+    vol-ayarlı hedef           A                         B
+    sabit %10 hedef            C                         D
 
-    A = mevcut tez kurulumu.
-    B = hedef aynı, model piyasa seviyesini görüyor  → ön işleme etkisi
-    C = ön işleme aynı, hedef mutlak                 → hedef etkisi
-    D = her ikisi de değişti                          → etkileşim
+    A = GERÇEK tez kurulumu (global ölçekleme + 6 XS sıra kolonu)
+    B = aynı hedef, her kolon tarih-içi sıraya çevrilmiş → seviyenin değeri
+    C = aynı ön işleme, hedef mutlak                     → hedef etkisi
+    D = her ikisi de                                      → etkileşim
 
     Marjinal etkiler:
-        ön işleme:  (B−A) ve (D−C)
-        hedef:      (C−A) ve (D−B)
-        etkileşim:  (D−C) − (B−A)
+        seviyeyi silmek: (B−A) ve (D−C)
+        hedef tanımı   : (C−A) ve (D−B)
+        etkileşim      : (D−C) − (B−A)
 
 NEDEN XGBoost
     Dört hücre × birden çok seed'in Transformer ile koşulması GPU-günleri
@@ -51,6 +54,9 @@ from sklearn.metrics import (matthews_corrcoef, average_precision_score,
 from datasets.feature_engineering import prepare_dataset
 from portfolio_engine import simulate_positions, performance
 
+__build__ = "2026-09-12b"   # A hücresi gerçek boru hattı (thesis/xs_all)
+
+
 warnings.filterwarnings('ignore')
 
 TRAIN_END = '2019-12-31'
@@ -60,10 +66,10 @@ HORIZON = 20
 OUT = 'results'
 
 CELLS = {
-    'A': ('vol_adj', 'xs',    'mevcut tez kurulumu'),
-    'B': ('vol_adj', 'level', 'ön işleme değişti'),
-    'C': ('fixed',   'xs',    'hedef değişti'),
-    'D': ('fixed',   'level', 'her ikisi de'),
+    'A': ('vol_adj', 'thesis', 'GERÇEK tez kurulumu'),
+    'B': ('vol_adj', 'xs_all', 'piyasa seviyesi silindi'),
+    'C': ('fixed',   'thesis', 'hedef değişti'),
+    'D': ('fixed',   'xs_all', 'her ikisi de'),
 }
 
 
@@ -116,21 +122,42 @@ def make_targets(ds, dd):
 # ══════════════════════════════════════════════════════════════════
 # 2. ÖN İŞLEME — tek fark, seviye bilgisinin korunup korunmadığı
 # ══════════════════════════════════════════════════════════════════
-def preprocess(X, dates, mode, train_mask):
+def preprocess(X, dates, mode, train_mask, xs_cols=()):
     """
-    xs    : tarih-içi yüzdelik sıra. Her gün [0,1]'e ölçeklenir, dolayısıyla
-            o güne ait PİYASA SEVİYESİ tanım gereği silinir — bütün hisseler
-            aynı anda ikiye katlansa da sıralama değişmez.
-    level : eğitim döneminde fit edilen tek bir z-skor. Kesitsel bilgi
-            korunur AMA seviye de korunur: bugün herkesin volatilitesi
-            yüksekse, bütün satırlar yüksek değer alır.
+    ⚠️ ÖNEMLİ DÜZELTME (danışman geri bildirimi #3)
+
+    Bu fonksiyonun ilk hâli iki kolu "tarih-içi yüzdelik sıra" ile
+    "global z-skor" olarak kurmuştu ve A hücresini tezin kurulumu diye
+    sunuyordu. Bu yanlıştı. datasets/feature_engineering.py okunduğunda
+    gerçek boru hattı şudur:
+
+      • TÜM teknik ve fundamental kolonlar: RobustScaler, YALNIZCA eğitim
+        döneminde fit edilir, global olarak uygulanır. Tarih-içi normalizasyon
+        YOKTUR — yani piyasa seviyesi KORUNUR.
+      • Ek olarak 6 firma-fundamental kolonun tarih-içi yüzdelik sırası
+        (*_XS) ayrı kolonlar olarak EKLENİR; ham kolonlar da kalır.
+
+    Dolayısıyla tez, "piyasa seviyesini silen" kol değil; zaten koruyan kol.
+    Doğru karşılaştırma bu yüzden şöyledir:
+
+    thesis : gerçek boru hattı — global RobustScaler + 6 XS sıra kolonu
+    xs_all : her kolon tarih-içi yüzdelik sıraya çevrilir; piyasa seviyesi
+             tanım gereği tamamen silinir (tezin YAPMADIĞI şey)
+    level  : yalnız global z-skor, XS kolonu yok (duyarlılık kontrolü)
     """
-    if mode == 'xs':
-        # dates bir numpy dizisi; Series geçilirse tekrarlı index hizalanır
+    if mode == 'xs_all':
         return X.groupby(dates, sort=False).rank(pct=True)
-    mu = X[train_mask].mean()
-    sd = X[train_mask].std().replace(0.0, 1.0)
-    return ((X - mu) / sd).clip(-8, 8)
+
+    med = X[train_mask].median()
+    iqr = (X[train_mask].quantile(0.75) - X[train_mask].quantile(0.25))
+    iqr = iqr.replace(0.0, 1.0)
+    Z = (X - med) / iqr                       # RobustScaler ile aynı tanım
+
+    if mode == 'thesis':
+        for c in xs_cols:
+            if c in X.columns:
+                Z[c + '_XSrank'] = X[c].groupby(dates, sort=False).rank(pct=True)
+    return Z
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -157,7 +184,14 @@ def stat_metrics(y, s, thr):
 
 
 # ══════════════════════════════════════════════════════════════════
+def _print_build():
+    import hashlib, os
+    h = hashlib.sha256(open(os.path.abspath(__file__), 'rb').read()).hexdigest()[:8]
+    print(f"[{os.path.basename(__file__)}  build {__build__}  sha256 {h}]")
+
+
 def main():
+    _print_build()
     ap = argparse.ArgumentParser()
     ap.add_argument('--seeds', type=int, nargs='+', default=[42, 43, 44])
     ap.add_argument('--cells', nargs='+', default=list(CELLS))
@@ -210,10 +244,12 @@ def main():
     # ── özellikler ──
     drop = {'Target', 'Ticker', 'Sector', 'Close', 'Open', 'High', 'Low',
             'Volume', 'Adj Close'}
+    # _XS kolonları girdi listesinden çıkarılır çünkü onları bu script
+    # 'thesis' modunda kendisi yeniden üretir; böylece iki kol arasındaki
+    # TEK fark tarih-içi normalizasyonun kapsamı olur.
     feat = [c for c in ds.columns
             if c not in drop and pd.api.types.is_numeric_dtype(ds[c])
-            and not c.endswith('_XS')]     # XS türevleri hariç: ön işlemeyi
-                                           # burada biz kontrol ediyoruz
+            and not c.endswith('_XS')]
     X_raw = ds[feat].astype(float)
     print(f"\n[3/4] {len(feat)} özellik | panel {len(ds):,} satır")
 
@@ -227,15 +263,27 @@ def main():
              & np.isfinite(dd)
              & np.isfinite(ds['Vol_20d'].to_numpy(dtype=float)))
 
-    Xp = {m: preprocess(X_raw, dates, m, is_tr & valid)
-          for m in ('xs', 'level')}
+    from datasets.feature_engineering import FIRM_FUNDAMENTAL_COLS
+    modes = sorted({CELLS[c][1] for c in args.cells})
+    Xp = {m: preprocess(X_raw, dates, m, is_tr & valid,
+                        xs_cols=FIRM_FUNDAMENTAL_COLS)
+          for m in modes}
+    for m in modes:
+        print(f"  ön işleme '{m}': {Xp[m].shape[1]} kolon")
 
     # ── portföy paneli ──
     sub = ds[is_te]
     px = sub.pivot_table(index=sub.index, columns='Ticker', values='Close')
     ret = px.pct_change().fillna(0.0)
+    tradable = px.notna()          # danışman geri bildirimi #1
     rebal = set(ret.index[::args.rebalance])
     flat = pd.DataFrame(0.0, index=ret.index, columns=ret.columns)
+
+    # Ortak başlangıç: XGBoost hücreleri test döneminin 1. gününden itibaren
+    # skor üretir (sekans penceresi gerekmez), ama pasif referansla aynı
+    # tarihten başlatmak için gene de açıkça sabitlenir.
+    cell_start = min(d for d in rebal)
+    print(f"\n  ortak başlangıç tarihi: {pd.Timestamp(cell_start).date()}")
 
     rows, preds = [], {}
     print(f"\n[4/4] {len(args.cells)} hücre × {len(args.seeds)} seed eğitiliyor...")
@@ -263,13 +311,15 @@ def main():
             r = stat_metrics(yi[mte], s_te, thr)
 
             # ekonomik: AYNI kural, AYNI panel
+            first = [d for d in sorted(rebal)]
             sw = (pd.DataFrame({'date': ds.index.to_numpy()[mte],
                                 'ticker': ds['Ticker'].to_numpy()[mte],
                                 'p': s_te})
                   .pivot_table(index='date', columns='ticker', values='p')
                   .reindex(index=ret.index).reindex(columns=ret.columns))
             net, tov, inv, _, _ = simulate_positions(
-                sw, ret, rebal, args.exclude_pct, args.cost_bps)
+                sw, ret, rebal, args.exclude_pct, args.cost_bps,
+                tradable=tradable, start_date=cell_start)
             e = performance(net, f'{cell}_seed{seed}')
 
             rows.append({'cell': cell, 'target': tgt_name, 'prep': prep_name,
@@ -283,8 +333,10 @@ def main():
 
     # ── pasif referanslar, aynı panel ──
     bench = []
-    for nm, rb in (('buy_hold_true', {ret.index[0]}), ('equal_weight_rebal', rebal)):
-        net, tov, inv, _, _ = simulate_positions(flat, ret, rb, 0.0, args.cost_bps)
+    for nm, rb in (('buy_hold_true', {cell_start}), ('equal_weight_rebal', rebal)):
+        net, tov, inv, _, _ = simulate_positions(flat, ret, rb, 0.0, args.cost_bps,
+                                                 tradable=tradable,
+                                                 start_date=cell_start)
         bench.append({**performance(net, nm), 'turnover': tov})
     B = pd.DataFrame(bench)
 
@@ -324,10 +376,10 @@ def main():
     print(f"{'kontrast':<38}{'ΔMCC':>10}{'ΔCalmar':>11}{'ΔmaksDD':>11}")
     print("-" * 70)
     contrasts = [
-        ('ön işleme | vol-ayarlı hedef  (B−A)', 'B', 'A'),
-        ('ön işleme | sabit hedef       (D−C)', 'D', 'C'),
-        ('hedef     | kesitsel norm     (C−A)', 'C', 'A'),
-        ('hedef     | seviye koruyan    (D−B)', 'D', 'B'),
+        ('seviyeyi sil | vol-ayarlı hedef (B−A)', 'B', 'A'),
+        ('seviyeyi sil | sabit hedef      (D−C)', 'D', 'C'),
+        ('hedef        | tez ön işleme    (C−A)', 'C', 'A'),
+        ('hedef        | seviye silinmiş  (D−B)', 'D', 'B'),
     ]
     got = {}
     for lab, hi, lo in contrasts:
@@ -356,7 +408,7 @@ def main():
         bm = float(B[B.strategy == 'equal_weight_rebal']['calmar'].iloc[0])
         print(f"  ortalama ön işleme etkisi (Calmar): {d_prep:+.3f}")
         print(f"  ortalama hedef etkisi     (Calmar): {d_tgt:+.3f}")
-        dom = 'ön işleme' if abs(d_prep) > abs(d_tgt) else 'hedef tanımı'
+        dom = 'ön işleme kapsamı' if abs(d_prep) > abs(d_tgt) else 'hedef tanımı'
         print(f"  → baskın faktör: {dom}")
         best = R.groupby('cell')['calmar'].mean().max()
         if best > bm:

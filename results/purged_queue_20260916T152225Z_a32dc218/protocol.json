@@ -1,0 +1,113 @@
+{
+  "seeds": [
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52
+  ],
+  "cells": [
+    "tech_only",
+    "multi_pure",
+    "multi_text"
+  ],
+  "expected": {
+    "torch_version": "2.5.1+cu121",
+    "cuda_build": "12.1",
+    "device": "cuda",
+    "source_sha256": {
+      "datasets/feature_engineering.py": "f12769ee6724af590e3f5ddfbfc0873ee40404ec920940d8a07a28d4d57924a7",
+      "models/transformer_model.py": "0612e064fd4c113c58e9380fd221cb8ead33c3aad5fabce8822fa414d9d7e6b9",
+      "models/pytorch_trainer.py": "747057c1b6bfb8476998820b11baddb5dcefeb302c6b3b801f31dc2815bea470",
+      "models/losses.py": "c30ce095c44b7cf12587c6ebf0cfbc3db6382b9bbdfa23069742288cbfa0e88a"
+    },
+    "dataset_sha256": "ae6213dad9ad6f5432b4033f6679cebbc80af6d94ab3570f5fe6a4bf134f7957",
+    "text_sha256": "ec84171ad821a79ceaa2aaf6ed3b832dec0312d43a3c270f7331599fa305931a",
+    "technical_columns": [
+      "RSI",
+      "MACD_Hist",
+      "MACD_Hist_Slope",
+      "BB_Pct",
+      "BB_Width",
+      "Returns",
+      "Vol_20d",
+      "Vol_5d",
+      "Current_Drawdown_5d",
+      "Current_Drawdown_20d",
+      "Current_Return_5d",
+      "ADX_14",
+      "Price_vs_SMA50",
+      "Price_vs_SMA200",
+      "ROC_10",
+      "Dist_to_Max252d",
+      "Rel_Volume",
+      "Vol_Trend",
+      "Price_vs_Max20d",
+      "RSI_vs_Max20d",
+      "RSI_Divergence",
+      "Vol_Dist_Ratio",
+      "Rel_Returns",
+      "Rel_RSI",
+      "Rel_Vol_20d",
+      "Rel_MACD",
+      "Rel_ROC_10",
+      "Rel_ATR_14",
+      "CCI_14",
+      "MFI_14",
+      "WILLR_14",
+      "OBV_Z20"
+    ],
+    "fundamental_columns": {
+      "tech_only": [
+        "Debt_to_Equity",
+        "Net_Profit_Margin",
+        "Current_Ratio",
+        "Altman_Z",
+        "Retained_Earnings_TA",
+        "Market_Value_to_Liab"
+      ],
+      "multi_pure": [
+        "Debt_to_Equity",
+        "Net_Profit_Margin",
+        "Current_Ratio",
+        "Altman_Z",
+        "Retained_Earnings_TA",
+        "Market_Value_to_Liab"
+      ],
+      "multi_text": [
+        "Debt_to_Equity",
+        "Net_Profit_Margin",
+        "Current_Ratio",
+        "Altman_Z",
+        "Retained_Earnings_TA",
+        "Market_Value_to_Liab",
+        "EK_Bankruptcy",
+        "EK_DebtTrigger",
+        "EK_Impairment",
+        "EK_ListingWarn",
+        "EK_AuditorChange",
+        "EK_Restatement",
+        "EK_MgmtChange",
+        "EK_Activity_60d",
+        "EK_DaysSince",
+        "LM_Negative",
+        "LM_Positive",
+        "LM_Uncertainty",
+        "LM_Litigious",
+        "LM_Constraining",
+        "LM_WordCount",
+        "TXT_SimPrev",
+        "TXT_LenChange",
+        "TXT_DaysSinceFiling",
+        "TXT_HasCoverage"
+      ]
+    }
+  },
+  "note": "Same seed IDs do not guarantee identical minibatch streams across architectures. Legacy I+II reports lack a dataset hash; reuse assumes the cache was not changed."
+}
