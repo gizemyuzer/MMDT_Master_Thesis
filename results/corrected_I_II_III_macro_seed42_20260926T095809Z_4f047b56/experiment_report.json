@@ -1,0 +1,25 @@
+{
+  "status": "FAILED",
+  "protocol": "corrected_prices_permno_I_II_III_macro_consensus_v1",
+  "seed": 42,
+  "output_folder": "\\\\nas.ads.mwn.de\\go39lop\\Desktop\\Archive\\results\\corrected_I_II_III_macro_seed42_20260926T095809Z_4f047b56",
+  "epochs_max": 30,
+  "batch_size": 64,
+  "monitor": "pr_auc",
+  "lr": 0.0001,
+  "weight_decay": 0.01,
+  "early_stop_patience": 8,
+  "scheduler": "ReduceLROnPlateau max/patience4/factor0.5",
+  "focal_alpha": 1.0,
+  "focal_gamma": 2.0,
+  "device": "cuda",
+  "torch_version": "2.5.1+cu121",
+  "cuda_build": "12.1",
+  "test_evaluated": false,
+  "limitations": [
+    "Compustat RDQ alignment is not vintage point-in-time financial data.",
+    "Macro values come from legacy panel; historical source vintages are not verified. This is a post-test exploratory contrast, not independent confirmation."
+  ],
+  "elapsed_minutes": 0.6890821633394808,
+  "error": "ValueError: Macro source more than seven calendar days stale"
+}

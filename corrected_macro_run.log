@@ -1,0 +1,58 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20260926011140
+Username: ADS\go39lop
+RunAs User: ADS\go39lop
+Configuration Name: 
+Machine: TUWIFWI-CIP-TS9 (Microsoft Windows NT 10.0.17763.0)
+Host Application: powershell.exe -NoExit -ExecutionPolicy Bypass -File C:\Users\go39lop\AppData\Local\Programs\PyCharm 2026.2.0.1\plugins\terminal\shell-integrations\powershell\powershell-integration.ps1
+Process ID: 15692
+PSVersion: 5.1.17763.8880
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.17763.8880
+BuildVersion: 10.0.17763.8880
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is \\nas.ads.mwn.de\go39lop\Desktop\Archive\corrected_macro_run.log
+
+
+PS>TerminatingError(): "Failed with exit code 1: run_corrected_macro.py --seed 42 --validate-only --device cuda"
+**********************
+Windows PowerShell transcript end
+End time: 20260926011506
+**********************
+**********************
+nStart der Windows PowerShell-Aufzeichnung
+Startzeit: 20260926115504
+Benutzername: ADS\go39lop
+RunAs-Benutzer: ADS\go39lop
+Konfigurationsname: 
+Computer: TUWIFWI-CIP-T15 (Microsoft Windows NT 10.0.17763.0)
+Hostanwendung: powershell.exe -NoExit -ExecutionPolicy Bypass -File C:\Program Files\JetBrains\PyCharm Community Edition 2024.1.4\plugins\terminal\shell-integrations\powershell\powershell-integration.ps1
+Prozess-ID: 37464
+PSVersion: 5.1.17763.8880
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.17763.8880
+BuildVersion: 10.0.17763.8880
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Die Aufzeichnung wurde gestartet. Die Ausgabedatei ist "H:\Desktop\Archive\corrected_macro_run.log".
+        "2010-01-13"
+      ],
+      "minimum_accepted_support": 0.9955555555555555
+    }
+  },
+  "macro_daily_sha256": "0f952dc1616dc4b017b8aeb7ecfe789250150aa7e377a1b7a5f44d00cd01ce68"
+}
+
+(thesis_venv) TerminatingError(): "Failed with exit code 1: run_corrected_macro.py --seed 42 --validate-only --device cuda"
+**********************
+Ende der Windows PowerShell-Aufzeichnung
+Endzeit: 20260926115853
+**********************
